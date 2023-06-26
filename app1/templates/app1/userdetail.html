@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS-Travels-User booking page{% endblock title %}  
+
+{% block body %}
+  <h1>Your Bookings Here</h1>
+  {% if Display %}
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>No of Seats</th>
+        <th>Bus Type</th>
+        <th>Bus Name</th>
+        <th>Bus No</th>
+        <th>Pickup Point</th>
+        <th>Pickup Date</th>
+        <th>Pickup Time</th>
+        <th>Dropdown Point</th>
+        <th>Dropdown Date</th>
+        <th>Dropdown Time</th>
+        <th>Bus Start Point</th>
+        <th>Bus End Point</th>
+      </tr>
+      {% for data in Display %}
+        <tr>
+          <td>{{data.Name}}</td>
+          <td>{{data.Email}}</td>
+          <td>{{data.No_of_seats}}</td>
+          <td>{{data.Bus_Type}}</td>
+          <td>{{data.Bus_Name}}</td>
+          <td>{{data.Bus_No}}</td>
+          <td>{{data.Pickup_Point}}</td>
+          <td>{{data.Pickup_Date}}</td>
+          <td>{{data.Pickup_Time}}</td>
+          <td>{{data.Dropdown_Point}}</td>
+          <td>{{data.Dropdown_Date}}</td>
+          <td>{{data.Dropdown_Time}}</td>
+          <td>{{data.Bus_Start_point}}</td>
+          <td>{{data.Bus_End_Point}}</td>
+        </tr>
+      {% endfor %}
+    </table><br><br>
+  {% endif %}
+
+    <a href="{% url 'homepage' %}">back</a><br><br>
+{% endblock body %}

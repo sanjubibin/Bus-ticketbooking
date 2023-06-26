@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block title %}SA-travels-check availability{% endblock title %}
+
+
+{% block css %}
+    #fade-msg {
+      color: red;
+      animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    } 
+{% endblock css %}
+
+
+{% block body %}
+    <form action="checkavailability" method="POST">
+        {% csrf_token %}
+
+        <h1>Check Available Buses</h1>
+
+        {{form}} <br><br>
+        <button>Check availability</button> <br><br>
+        
+        <div id="fade-msg">
+          {{ no_bus }}
+        </div>
+
+        <label for="bookticket">Go To Book Page:</label>
+        <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
+    
+        <label for="homepage">Back</label>
+        <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
+    </form>
+{% endblock body %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS-Travels{% endblock title %}
+
+{% block css %}
+h2 {
+  color: green;
+}
+{% endblock css %}
+
+{% block body %}
+    <form action="deleteplace" method="POST">
+        {% csrf_token %}
+
+        <h2>Delete Places</h2>
+    
+        {{form.place.label}}
+        {{form.place}} <br><br>
+    
+        <label for="deleteplace">Delete Place</label>
+        <button id="deleteplace">Delete</button><br><br>
+    
+        <label for="back-admin">Back</label>
+        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>    
+        
+        <div id="fade-msg">
+            {{msg}}
+        </div>
+        
+        <h2>Place Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Place</th>
+          </tr>
+          {% for place in places %}
+            <tr>
+              <td>{{place.id}}</td>
+              <td>{{place.place}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+    </form>
+{% endblock body %}

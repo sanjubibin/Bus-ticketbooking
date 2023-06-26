@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}SA-travels-book tickets{% endblock title %}
+
+{% block css %}
+#fade-msg {
+    color: red;
+    animation: fadeOut 10s ease forwards;
+  }
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  } 
+  #msg {
+    color: green;
+  }
+{% endblock css %}
+
+{% block body %}
+    <form action="bookticket" method="POST">
+        {% csrf_token %}
+        <h1>Book Ticket</h1>
+
+        {% if is_it %}
+          <div id="msg">
+            {{bus_select}}
+          </div>
+        {% endif %}
+        {{form.bus_no.label}}
+        {{form.bus_no}} <br><br>
+        {{form.no_of_seats.label}} 
+        {{form.no_of_seats}} <br><br>
+        <div id="fade-msg">
+            {{error}}
+        </div>
+        {{form.user_pickup_point.label}}
+        {{form.user_pickup_point}} <br><br>
+        {{form.user_dropdown_point.label}}
+        {{form.user_dropdown_point}} <br><br>
+
+        <label for="bookticket">Press To Book Tickets</label>
+        <button id="bookticket">Book now</button> <br><br>
+
+        <label for="checkavailability">Check Bus Availability:</label>
+        <a href="{% url 'checkavailability' %}" id="checkavailability">Press</a><br><br>
+
+        <label for="homepage">Back</label>
+        <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
+    </form>
+{% endblock body %}

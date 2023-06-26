@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}
+SA Travels-user page
+{% endblock title %}
+
+{% block css %}
+    #fade-msg {
+    color: red;
+    animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  } 
+  h2 {
+    color: green;
+  }
+{% endblock css %}
+
+{% block body %}
+    <form action="home" method="POST">
+        {% csrf_token %}
+
+        <h1>Welcome {{username|title}}</h1>
+
+        <label for="checkavailability">Check Bus availability:</label>
+        <a href="{% url 'checkavailability' %}" id="checkavailability">Press</a><br><br>
+
+        <label for="bookticket">Book ticket:</label>
+        <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
+
+        <label for="userdetail">Your Details</label>
+        <a href="{% url 'userdetail' %}">press</a> <br><br>
+
+        <label for="logout">Logout your account:</label>
+        <a href="{% url 'logout' %}" id="logout">Log Out</a><br><br>
+
+        <h2>Place's Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Place</th>
+          </tr>
+          {% for place in places %}
+            <tr>
+              <td>{{place.id}}</td>
+              <td>{{place.place}}</td>
+            </tr>
+          {% endfor %}
+        </table><br>
+
+        <h2>Bus Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Bus No</th>
+            <th>Bus Name</th>
+            <th>Total Seats</th>
+            <th>Bus Type</th>
+          </tr>
+          {% for bus in buses %}
+            <tr>
+              <td>{{bus.id}}</td>
+              <td>{{bus.bus_no}}</td>
+              <td>{{bus.bus_name}}</td>
+              <td>{{bus.total_seats}}</td>
+              <td>{{bus.bus_type}}</td>
+            </tr>
+          {% endfor %}
+        </table><br>
+
+        <h2>Active Bus Status Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Bus Id</th>
+            <th>Seats Available</th>
+            <th>Start Place Id</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Place Id</th>
+            <th>End Date</th>
+            <th>End Time</th>
+          </tr>
+          {% for bus in all_bus_status %}
+            <tr>
+              <td>{{bus.id}}</td>
+              <td>{{bus.bus_id}}</td>
+              <td>{{bus.seats_available}}</td>
+              <td>{{bus.start_place_id}}</td>
+              <td>{{bus.start_date}}</td>
+              <td>{{bus.start_time}}</td>
+              <td>{{bus.end_place_id}}</td>
+              <td>{{bus.end_date}}</td>
+              <td>{{bus.end_time}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+    </form>
+{% endblock body %}

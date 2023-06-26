@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+SA Travels-login page
+{% endblock title %}
+
+{% block css %}
+    #fade-msg {
+      color: red;
+      animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    } 
+{% endblock css %}
+
+{% block body %}
+    <h1>LOGIN PAGE</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+    
+        <label for="password1">Passsword</label>
+        <input type="password" id="password1" name="password" required><br><br>
+
+        <button>Log In</button><br>
+
+        <div id="fade-msg">{{msg}}</div><br>
+
+        <label for="sigin">Don't Have Account:</label>
+        <a href="{% url 'signin' %}" id="sigin">Sign Up</a><br><br>
+    </form>
+{% endblock body %}

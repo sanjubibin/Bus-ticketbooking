@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Error{% endblock title %}
+
+{% block css %}
+#error_message {
+    color: red;
+}
+{% endblock css %}
+
+{% block body %}
+    <h1>Something went wrong!!</h1>
+
+    <div id="error_message">{{message}}</div> <br>
+
+    <label for="back-page">Go Back</label>
+    <button onclick="history.back()" id="back-page">Go Back</button>
+
+{% endblock body %}

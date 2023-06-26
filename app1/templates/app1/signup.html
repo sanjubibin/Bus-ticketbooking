@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+SA Travels-signup page
+{% endblock title %}
+
+{% block css %}
+    #fade-msg {
+      color: red;
+      animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    } 
+    .line-breaks {
+      white-space: pre-line;
+  }
+  
+{% endblock css %}
+
+{% block body %}
+  <h1>SIGNUP PAGE</h1>
+  <form action="signin" method="POST" >
+    {% csrf_token %}
+    
+    {{form.username.label}}
+    {{form.username}} <br><br>
+    {{form.email.label}}
+    {{form.email}} <br><br>
+    {{form.password1.label}}
+    {{form.password1}} <br><br>
+    {{form.password2.label}}
+    {{form.password2}} <br><br>
+
+    {% if message %}<div id="fade-msg" class="line-breaks">{{message}}</div>{% endif %} <br>
+
+    <button>Sign Up</button><br><br>
+
+    <label for="login">Already a User:</label>
+    <a href="{% url 'login' %}" id="login">Log In</a>
+  </form>
+{% endblock body %}

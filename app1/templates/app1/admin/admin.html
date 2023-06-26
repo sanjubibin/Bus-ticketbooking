@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}SA-Travels-admin page{% endblock title %}
+
+
+{% block body %}
+    <form action="auth" method="POST">
+        {% csrf_token %}
+
+        <h1>ADMIN PAGE</h1>
+
+        <label for="place">Place: </label>
+        <a href="{% url 'addplace' %}" id="place">Add</a>
+        <a href="{% url 'editplace' %}" id="place">Edit</a>
+        <a href="{% url 'deleteplace' %}" id="place">Delete</a><br><br>
+
+        <label for="bus">Add Bus</label>
+        <a href="{% url 'addbus' %}" id="bus">Add</a>
+        <a href="{% url 'editbus' %}" id="bus">Edit</a>
+        <a href="{% url 'deletebus' %}" id="bus">Delete</a>  <br><br>
+
+        <label for="addbusstatus">Add Bus Status</label>
+        <a href="{% url 'addbusstatus' %}" id="addbusstatsus">Press</a><br><br>
+
+        <label for="filter_search">Fetch Booked User Details</label>
+        <a href="{% url 'filteruser' %}" id="filter_search">Press</a><br><br>
+
+        <label for="logout">Logout your account:</label>
+        <a href="{% url 'logout' %}" id="logout">Log Out</a>
+    </form>
+{% endblock body %}

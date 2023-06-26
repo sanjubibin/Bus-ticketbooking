@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS-admin-add bus{% endblock title %}
+
+
+{% block css %}
+    #fade-msg {
+        color: red;
+        animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+        0% {
+        opacity: 1;
+        }
+        100% {
+        opacity: 0;
+        }
+    }
+
+    h2,h3 {
+      color: green;
+    }
+{% endblock css %}
+
+{% block body %}
+    <form action="addbus" method="POST">
+        {% csrf_token %}
+
+        <h2>Add Bus </h2>
+        {{form.bus_no.label}}
+        {{form.bus_no}} <br><br>
+        {{form.bus_name.label}}
+        {{form.bus_name}} <br><br>
+        {{form.total_seats.label}}
+        {{form.total_seats}} <br><br>
+        {{form.bus_type.label}}
+        {{form.bus_type}} <br><br>
+
+        <div id="fade-msg">{{msg}}</div>
+         
+        <label for="add_bus">Add Bus</label>
+        <button id="add_bus">Add</button><br><br>
+
+        <label for="back-admin">Back</label>
+        <a href="{% url 'adminpage' %}" id="back-admin">Back</a>
+
+        <h2>Bus Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Bus No</th>
+            <th>Bus Name</th>
+            <th>Total Seats</th>
+            <th>Bus Type</th>
+          </tr>
+          {% for bus in buses %}
+            <tr>
+              <td>{{bus.id}}</td>
+              <td>{{bus.bus_no}}</td>
+              <td>{{bus.bus_name}}</td>
+              <td>{{bus.total_seats}}</td>
+              <td>{{bus.bus_type}}</td>
+            </tr>
+          {% endfor %}
+    </form>
+{% endblock body %}

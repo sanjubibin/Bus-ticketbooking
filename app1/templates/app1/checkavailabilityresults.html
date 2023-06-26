@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS_Travels{% endblock title %}
+
+
+{% block body %}
+    <h1>Available buses for you</h1>
+
+    {% if data1 %}
+    <table>
+      <tr>
+        <th>Bus No</th>
+        <th>Available Seats</th>
+        <th>Starting Place</th>
+        <th>Starting Date</th>
+        <th>Starting Time</th>
+        <th>Destination Place</th>
+        <th>Destination Date</th>
+        <th>Destination Time</th>
+      </tr>
+      {% for data in data1 %}
+        <tr>
+          <td>{{data.Bus_no}}</td>
+          <td>{{data.Available_Seats}}</td>
+          <td>{{data.Starting_place}}</td>
+          <td>{{data.Starting_date}}</td>
+          <td>{{data.Starting_time}}</td>
+          <td>{{data.Destination_place}}</td>
+          <td>{{data.Destination_date}}</td>
+          <td>{{data.Destination_time}}</td>  
+        </tr>
+      {% endfor %}
+    <table>
+    {% endif %} <br><br>
+
+    <label for="bookticket">Book Ticket From Here:</label>
+    <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
+
+    <label for="homepage">Back</label>
+    <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
+{% endblock body %}

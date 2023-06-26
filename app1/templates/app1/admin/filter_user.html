@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS-Travels{% endblock title %}
+
+
+{% block css %}
+    #fade-msg {
+      color: red;
+      animation: fadeOut 10s ease forwards;
+    }
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    } 
+{% endblock css %}
+
+
+{% block body %}
+    <form action="filteruser" method="POST">
+        {% csrf_token %}
+        <h1>Get Booked User Details</h1>
+
+        {{form.filter_by.label}}
+        {{form.filter_by}} <br><br>
+        {{form.data.label}}
+        {{form.data}} <br><br>
+
+        <button>Get Details</button> <br><br>
+         
+        <a href="{% url 'adminpage' %}">Back</a><br><br>
+
+        {% if error %}
+        <div id="fade-msg">
+            {{error}}
+        </div>
+        {% endif %}
+
+        {% if data2 %}
+          <h2>User Details</h2>
+          <table>
+            <tr>
+              <th>Id</th>
+              <th>User Name</th>
+              <th>Email</th>
+              <th>Is Active</th>
+              <th>SignUp Date</th>
+              <th>Last LogIn</th>
+            </tr>
+            {% for data in data2 %}
+              <td>{{data.id}}</td>
+              <td>{{data.user_name}}</td>
+              <td>{{data.email}}</td>
+              <td>{{data.is_active}}</td>
+              <td>{{data.signup_date}}</td>
+              <td>{{data.last_login}}</td>
+            {% endfor %}
+          </table>  
+        {% endif %} <br><br>
+
+        {% if data1 %}
+        <h2>User Booked Details</h2>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>No of Seats</th>
+            <th>Bus Type</th>
+            <th>Bus Name</th>
+            <th>Bus No</th>
+            <th>Pickup Point</th>
+            <th>Pickup Date</th>
+            <th>Pickup Time</th>
+            <th>Dropdown Point</th>
+            <th>Dropdown Date</th>
+            <th>Dropdown Time</th>
+            <th>Bus Start Point</th>
+            <th>Bus End Point</th>
+          </tr>
+          {% for data in data1 %}
+            <tr>
+              <td>{{data.Name}}</td>
+              <td>{{data.Email}}</td>
+              <td>{{data.No_of_seats}}</td>
+              <td>{{data.Bus_Type}}</td>
+              <td>{{data.Bus_Name}}</td>
+              <td>{{data.Bus_No}}</td>
+              <td>{{data.Pickup_Point}}</td>
+              <td>{{data.Pickup_Date}}</td>
+              <td>{{data.Pickup_Time}}</td>
+              <td>{{data.Dropdown_Point}}</td>
+              <td>{{data.Dropdown_Date}}</td>
+              <td>{{data.Dropdown_Time}}</td>
+              <td>{{data.Bus_Start_point}}</td>
+              <td>{{data.Bus_End_Point}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+{% endblock body %}

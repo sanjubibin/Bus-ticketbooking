@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}AS-Travels{% endblock title %}
+
+{% block css %}
+#fade-msg {
+    color: red;
+    animation: fadeOut 10s ease forwards;
+  }
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  } 
+  h2,h3 {
+    color: green;
+  }
+{% endblock css %}
+
+{% block body %}
+    <form action="editplace" method="POST">
+        {% csrf_token %}
+
+        <h2>Edit Places</h2> 
+        <h3>Select The Place to Edit the Bus</h3>
+        {{form.place_a.label}}
+        {{form.place_a}} <br><br>
+        <h3>Below changes will be edited</h3>
+        {{form.place_b.label}}
+        {{form.place_b}} <br><br>
+    
+        <label for="editplace">Edit Place</label>
+        <button id="editplace">Edit</button><br><br>
+    
+        <label for="back-admin">Back</label>
+        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>    
+        
+        <div id="fade-msg">
+            {{msg}}
+        </div>
+        
+        <h2>Place Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Place</th>
+          </tr>
+          {% for place in places %}
+            <tr>
+              <td>{{place.id}}</td>
+              <td>{{place.place}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+    </form>
+{% endblock body %}

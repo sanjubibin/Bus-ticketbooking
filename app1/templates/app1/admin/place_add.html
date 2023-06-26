@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+
+{% block title %}SA-admin-add place{% endblock title %}
+
+{% block css %}
+h2 {
+  color: green;
+}
+{% endblock css %}
+
+{% block body %}
+    <form action="addplace" method="POST">
+        {% csrf_token %}
+
+        <h2>Add Places</h2>
+
+        {{form.places.label}}:
+        {{form.places}} <br><br>
+
+        <label for="add_place">Add Place:</label>
+        <button id="add_place">Add</button><br><br>
+
+        <div id="fade-msg">{{msg}}</div>
+
+        <label for="back-admin">Back</label>
+        <a href="{% url 'adminpage' %}" id="back-admin">Back</a>
+
+        <h2>Place Table</h2>
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Place</th>
+          </tr>
+          {% for place in places %}
+            <tr>
+              <td>{{place.id}}</td>
+              <td>{{place.place}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+    </form>
+{% endblock body %}

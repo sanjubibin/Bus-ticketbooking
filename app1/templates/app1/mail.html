@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}SA-travels-Send Mail{% endblock title %}
+
+
+{% block body %}
+    <h1>Ticket booked succesfully</h1>
+    <h2>Check Mail for confirmation</h2> <br><br>
+
+    <label for="logout">Logout your account:</label>
+    <a href="{% url 'logout' %}" id="logout">Log Out</a><br><br>
+
+    <label for="homepage">Back to homepage</label>
+    <a href="{% url 'homepage' %}" id="homepage">Back</a>
+
+{% endblock body %}

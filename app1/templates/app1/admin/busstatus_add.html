@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    AS-admin-add_bus_status
+{% endblock title %}
+
+
+{% block css %}
+#fade-msg {
+    color: red;
+    animation: fadeOut 5s ease forwards;
+}
+@keyframes fadeOut {
+    0% {
+    opacity: 1;
+    }
+    100% {
+    opacity: 0;
+    }
+}
+h2,h3 {
+  color: green;
+}
+{% endblock css %}
+
+
+{% block body %}
+    <form action="addbusstatus" method="POST">
+        {% csrf_token %}
+
+        <h2>Add Bus Status</h2>
+        
+        {{form.bus_no.label}}
+        {{form.bus_no}} <br><br>
+        {{form.seats_available.label}}
+        {{form.seats_available}} <br><br>
+        {{form.start_place.label}}
+        {{form.start_place}} <br><br>
+        {{form.start_date.label}}
+        {{form.start_date}} <br><br>
+        {{form.start_time.label}}
+        {{form.start_time}} <br><br>
+        {{form.end_place.label}}
+        {{form.end_place}} <br><br>
+        {{form.end_date.label}}
+        {{form.end_date}} <br><br>
+        {{form.end_time.label}}
+        {{form.end_time}} <br><br>
+        
+        <div id="fade-msg">{{msg}}</div>
+
+        <label for="ad_busstatus">Add Bus Status</label>
+        <button id="add_busstatus">Add</button><br><br>
+
+        <label for="back-admin">Back</label>
+        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>
+
+        <h2>Active Bus Status Table</h2>
+      
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Bus Id</th>
+            <th>Seats Available</th>
+            <th>Start Place Id</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Place Id</th>
+            <th>End Date</th>
+            <th>End Time</th>
+          </tr>
+          {% for bus in all_bus_status_filter_by_upcoming_date %}
+            <tr>
+              <td>{{bus.id}}</td>
+              <td>{{bus.bus_id}}</td>
+              <td>{{bus.seats_available}}</td>
+              <td>{{bus.start_place_id}}</td>
+              <td>{{bus.start_date}}</td>
+              <td>{{bus.start_time}}</td>
+              <td>{{bus.end_place_id}}</td>
+              <td>{{bus.end_date}}</td>
+              <td>{{bus.end_time}}</td>
+            </tr>
+          {% endfor %}
+        </table> <br><br>
+
+        <h2>Expired Bus Status Table</h2>
+      
+        <table>
+          <tr>
+            <th>Table Id</th>
+            <th>Bus Id</th>
+            <th>Seats Available</th>
+            <th>Start Place Id</th>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Place Id</th>
+            <th>End Date</th>
+            <th>End Time</th>
+          </tr>
+          {% for bus in all_bus_status_filter_by_expired_date %}
+            <tr>
+              <td>{{bus.id}}</td>
+              <td>{{bus.bus_id}}</td>
+              <td>{{bus.seats_available}}</td>
+              <td>{{bus.start_place_id}}</td>
+              <td>{{bus.start_date}}</td>
+              <td>{{bus.start_time}}</td>
+              <td>{{bus.end_place_id}}</td>
+              <td>{{bus.end_date}}</td>
+              <td>{{bus.end_time}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+    </form>
+{% endblock body %}

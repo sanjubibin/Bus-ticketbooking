@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+SA-travels-logout page
+{% endblock title %}
+
+{% block body %}
+<h1>you are logged out</h1>
+{{msg_unauth}}
+
+<a href="{% url 'login' %}" id="login">Back To Login Page</a><br><br>
+
+{% endblock body %}
+

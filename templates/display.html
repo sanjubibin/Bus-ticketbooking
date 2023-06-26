@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    AS-travels
+{% endblock title %}
+
+{% block body %}
+    <h1>{{msg}}</h1>
+    <h2 color="red">{{msg2}}</h2>
+    {% for data in data1 %}
+        {{data}}
+    {% endfor %}
+{% endblock body %}
