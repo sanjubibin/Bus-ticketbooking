@@ -30,7 +30,7 @@ from .serializers import (PlacesSerializer, BusSerializer, BusStatusSerializer,
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import serializers
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, OutstandingToken
 #code here
 
 class SignUp(View):
@@ -155,16 +155,16 @@ class LogInApi(APIView):
             return Response(data.data)
         auth_user = authenticate(request, username=user.username, email= user.email, password=password)
         if auth_user is not None and not user.is_superuser:
-            login(self.request, auth_user)
+            #login(self.request, auth_user)    #--> only used when using templates
             msg = "you are logged in as User"
-            refresh = RefreshToken.for_user(user)
+            refresh = RefreshToken.for_user(auth_user)
             access_token = str(refresh.access_token)
             return Response({"message": msg, "logged_email": email, "token": access_token})
 
         
         elif auth_user is not None and user.is_superuser:
             login(self.request, auth_user)
-            refresh = RefreshToken.for_user(user)
+            refresh = RefreshToken.for_user(auth_user)
             access_token = str(refresh.access_token)
             msg = "you are logged in as Admin user"
             return Response({"message": msg, "logged_email": email, "token": access_token})
@@ -262,16 +262,6 @@ class BookTicket(LoginRequiredMixin, View):
 
 class BookTicketApi(APIView):
     permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        data = {}
-        if self.request.session.get("checkavailability_bus_no"):
-            bus_nos = self.request.session.get("checkavailability_bus_no")
-
-            #works only if the user uses this page from check availability
-            data["bus_select"] = f"Select The Bus No \"{bus_nos}\" That Suits Your Request" 
-
-        return Response({"data": data})
     
     def post(self, request):
         auth_user = self.request.user
@@ -391,39 +381,40 @@ class CheckAvailabilityApi(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        pickup_point = self.request.POST.get("route_from")
-        pickup_point_id = Places.objects.get(places =pickup_point) 
+        try:
+            pickup_point = self.request.POST.get("route_from")
+            pickup_point_id = Places.objects.get(places =pickup_point) 
 
-        aa = self.request.POST.get("date_of_travel")
-        date = aa
+            aa = self.request.POST.get("date_of_travel")
+            date = aa
 
-        drop_point = self.request.POST.get("destination_to")
-        drop_point_id = Places.objects.get(places = drop_point)
+            drop_point = self.request.POST.get("destination_to")
+            drop_point_id = Places.objects.get(places = drop_point)
 
-        available_bus = BusStatus.objects.filter(
-                Q(start_place__exact=pickup_point_id) & 
-                Q(start_date__exact=date) & 
-                Q(end_place__exact=drop_point_id)
-            )
-        if available_bus:
-            Bus = available_bus
-            data1 = [{
-                "Bus_no": bus.bus.bus_no,
-                "Available_Seats":bus.seats_available,
-                "Starting_place":bus.start_place.places,
-                "Starting_date":bus.start_date.strftime('%Y-%m-%d'),
-                "Starting_time":bus.start_time.strftime('%H:%M:%S'),
-                "Destination_place":bus.end_place.places,
-                "Destination_date":bus.end_date.strftime('%Y-%m-%d'),
-                "Destination_time":bus.end_time.strftime('%H:%M:%S')
-            } for bus in Bus]
-            session_bus = available_bus.first()
-            session_bus_no = session_bus.bus.bus_no
-            self.request.session["checkavailability_bus_no"] = session_bus_no
-            return Response({"filtered bus": data1})
-        else:
+            available_bus = BusStatus.objects.filter(
+                    Q(start_place__exact=pickup_point_id) & 
+                    Q(start_date__exact=date) & 
+                    Q(end_place__exact=drop_point_id)
+                )
+            if available_bus:
+                Bus = available_bus
+                data1 = [{
+                    "Bus_no": bus.bus.bus_no,
+                    "Available_Seats":bus.seats_available,
+                    "Starting_place":bus.start_place.places,
+                    "Starting_date":bus.start_date.strftime('%Y-%m-%d'),
+                    "Starting_time":bus.start_time.strftime('%H:%M:%S'),
+                    "Destination_place":bus.end_place.places,
+                    "Destination_date":bus.end_date.strftime('%Y-%m-%d'),
+                    "Destination_time":bus.end_time.strftime('%H:%M:%S')
+                } for bus in Bus]
+                session_bus = available_bus.first()
+                session_bus_no = session_bus.bus.bus_no
+                self.request.session["checkavailability_bus_no"] = session_bus_no
+                return Response({"filtered bus": data1})
+        except:
             no_bus = "No available bus for your requirements"
-        return Response({"msg": no_bus}) 
+            return Response({"msg": no_bus}) 
         
 
 class UserBookingDetails(LoginRequiredMixin, View):
@@ -544,7 +535,7 @@ class PlaceEdit(LoginRequiredMixin, View):
             place_model = Places.objects.get(places=place_id)
             place_model.places = place
             place_model.save()
-            return render(request, "app1/admin/place_edit.html", {"form": form, "places": all_places, "msg": f"place \"{place}\" with place id \"{place_id} has successfully edited"})
+            return render(request, "app1/admin/place_edit.html", {"form": form, "places": all_places, "msg": f"place '{place}' with place id '{place_id} has successfully edited"})
         else:
             return render(request, "app1/admin/place_edit.html", {"form": form, "places": all_places, "msg": "This place already exists"})
         
@@ -570,10 +561,10 @@ class PlaceEditApi(APIView):
         place = self.request.POST.get("place")
         data = PlacesSerializer(Places.objects.all(), many=True)
         if not Places.objects.filter(places=place).exists():
-            place_model = Places.objects.get(places=place_id)
+            place_model = Places.objects.get(pk=place_id)
             place_model.places = place
             place_model.save()
-            return Response({"msg": f"place \"{place}\" with place id \"{place_id} has successfully edited", "places": data.data})
+            return Response({"msg": f"place '{place}' with place id '{place_id} has successfully edited", "places": data.data})
         else:
             return Response({"msg": "This place already exists", "places": data.data})
         
@@ -607,16 +598,16 @@ class PlaceDeleteApi(APIView):
             return Response({"msg": "you have been logged out because this page is only accessible by admin"})
         places = Places.objects.all()
         data = PlacesSerializer(places, many=True)
-        return render({"places": data.data})
+        return Response({"places": data.data})
     
     def post(self, request):
         
-        place_id = self.request.POST.get("place")
+        place_id = self.request.POST.get("place_id")
         data = PlacesSerializer(Places.objects.all(), many=True)
-        if Places.objects.filter(places=place_id).exists():
-            place_model = Places.objects.get(places=place_id)
+        if Places.objects.filter(pk=place_id).exists():
+            place_model = Places.objects.get(pk=place_id)
             place_model.delete()
-            return Response({"places": data.data, "msg": f"place place id \"{place_id}\" has successfully deleted"})
+            return Response({"places": data.data, "msg": f"place place id '{place_id}' has successfully deleted"})
         else:
             return Response({"places": data.data, "msg": "Something Went Wrong"})
 
@@ -1005,17 +996,43 @@ def logoutsite(request):
     request.session.flush()
     return render(request, "app1/logout.html")
 
-class LogOutApi(APIView):
-    def get(self, request):
-        logout(self.request)
-        self.request.session.flush()
-        return Response({"msg": "you have been logged out"})
+# class LogOutApi(APIView):
+#     def get(self, request):
+#         logout(self.request)
+#         self.request.session.flush()
+#         return Response({"msg": "you have been logged out"})
     
-from django.middleware.csrf import get_token
-def get_csrf_token(request):
-    csrf_token = get_token(request)
-    data = {'csrf_token': csrf_token}
-    return JsonResponse(data)
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework.authentication import SessionAuthentication
+
+# class LogOutApi(APIView):
+#     authentication_classes = (SessionAuthentication,)
+
+#     def get(self, request, *args, **kwargs):
+#         self.request.user.access_token.delete()
+#         return Response({"msg": "You have been logged out successfully"})
+
+class LogOutApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        token = self.request.POST.get('refresh_token')
+        if token:
+            try:
+                refresh_token = RefreshToken(token)
+                refresh_token.blacklist()
+                return Response({'status': 'ok'})
+            except Exception as e:
+                return Response({'status': 'error', 'message': str(e)})
+        else:
+            return Response({'status': 'error', 'message': 'Token not provided'})
+        #     except Exception as e:
+        #         return Response({"message": "Invalid token"})
+        # else:
+        #     return Response({"message": "Refresh token is required"})
+
+        # return Response({"message": "User logged out successfully"})
 
 
 ################  functions shortcuts  ###############

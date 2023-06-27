@@ -133,8 +133,8 @@ paths:
         - name: bus_no
           in: formData
           required: true
-          type: integer
-          description: name of the bus
+          type: string
+          description: number of the bus
         - name: no_of_seats
           in: formData
           required: true
@@ -158,17 +158,27 @@ paths:
       operationId: user_page_userbookingdetails
       tags:
         - User Page
+      security:
+        - Bearer: []
       summary: get user bus booking details
       responses:
         200:
           description: gives out the user's bus ticket booked details
 
   /rest/logout:
-    get:
+    post:
       operationId: user_page_logout
       tags:
         - User Page
+      security:
+        - Bearer: []
       summary: logout user
+      parameters:
+        - name: refresh_token
+          in: formData
+          required: true
+          type: string
+          description: enter the bearer token
       responses:
         200:
           description: successfully logged out
@@ -178,6 +188,8 @@ paths:
       operationId: add_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
         200:
@@ -205,6 +217,8 @@ paths:
       operationId: edit_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
         200:
@@ -237,6 +251,8 @@ paths:
       operationId: delete_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
         200:
@@ -249,10 +265,10 @@ paths:
         - Bearer: []
       summary: delete the place in the database with table id also verify whether the user is logged in as admin user or logout the user if the user is not admin
       parameters:
-        - name: place
+        - name: place_id
           in: formData
           required: true
-          type: string
+          type: integer
           description: enter the place that you want to delete
       responses:
         200:
@@ -263,6 +279,8 @@ paths:
       operationId: add_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
         200:
@@ -304,6 +322,8 @@ paths:
       operationId: edit_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
        200:
@@ -350,6 +370,8 @@ paths:
       operationId: delete_bus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
       summary: verify whether the user is logged in as admin user or logout the user if the user is not admin
       responses:
         200:
@@ -408,9 +430,22 @@ paths:
 
   /auth/rest/addbusstatus:
     get:
-      operationId: add_busstatus
+      operationId: add_busstatus_getrequest
       tags:
         - Admin Page
+      security:
+        - Bearer: []
+      summary: Displahy all the bus status in detiails
+      responses:
+        200:
+          description: successful
+
+    post:
+      operationId: add_busstatus_postrequest
+      tags:
+        - Admin Page
+      security:
+        - Bearer: []
       summary: add upcoming active bus status
       parameters:
         - name: bus_no

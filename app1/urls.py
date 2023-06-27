@@ -55,6 +55,4 @@ urlpatterns = [
     path("rest/logout", views.LogOutApi.as_view(), name="rest_logout"),
 
     path("test", views.Test.as_view(), name="test"),
-
-    path('get-csrf-token', views.get_csrf_token, name='get_csrf_token'),
 ]
