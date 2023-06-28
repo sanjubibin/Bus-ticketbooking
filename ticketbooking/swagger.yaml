@@ -463,6 +463,11 @@ paths:
           required: true
           type: string
           description: enter the place where the bus will end i's journey(places from the DB)
+        - name: seats_available
+          in: formData
+          required: true
+          type: string
+          description: enter the remaining avaialble seats in the bus
         - name: start_date
           in: formData
           required: true

@@ -1005,7 +1005,7 @@ class BusStatusAddApi(APIView):
         starttime = self.request.POST.get("start_time")
         enddate = self.request.POST.get("end_date")
         endtime = self.request.POST.get("end_time")
-
+        seatsavailalble = self.request.POST.get("seats_available")
         bus = Bus.objects.get(bus_no=bus_no)
 
         if not BusStatus.objects.filter(bus=bus).exists():
@@ -1014,7 +1014,7 @@ class BusStatusAddApi(APIView):
 
             data = BusStatus(
                 bus=Bus.objects.get(bus_no=bus_no),
-                seats_available=self.request.POST.get("seats_available"),
+                seats_available=seatsavailalble,
                 start_place=start_place,
                 start_date=startdate,
                 start_time=starttime,
@@ -1029,9 +1029,8 @@ class BusStatusAddApi(APIView):
                   "bus_name": bus.bus_name,
                   "total seats": bus.total_seats,
                   "bus_type": bus.bus_type} for bus in buses]
-            return Response({"buses": data2, "all_bus_status_filter_by_expired_date": expired_bus_statuses_serializer.data,
-                                                                     "all_bus_status_filter_by_upcoming_date": upcoming_bus_statuses_serializer.data,
-                                                                      "msg": f"Bus from {bus_start_place} to {bus_end_place} starting on {startdate} added successfully"})
+            return Response({"msg": f"Bus from {bus_start_place} to {bus_end_place} starting on {startdate} added successfully", "buses": data2, "all_bus_status_filter_by_expired_date": expired_bus_statuses_serializer.data,
+                            "all_bus_status_filter_by_upcoming_date": upcoming_bus_statuses_serializer.data})
         
         else:
             buses = Bus.objects.all()
@@ -1040,8 +1039,8 @@ class BusStatusAddApi(APIView):
                 "bus_name": bus.bus_name,
                 "total seats": bus.total_seats,
                 "bus_type": bus.bus_type} for bus in buses]
-            return Response({"all_bus_status_filter_by_expired_date": expired_bus_statuses_serializer.data,
-                                                                     "all_bus_status_filter_by_upcoming_date": upcoming_bus_statuses_serializer.data,"buses": data2, "msg": "Bus with the given number already exists"})
+            return Response({"msg": "Bus with the given number already exists", "all_bus_status_filter_by_expired_date": expired_bus_statuses_serializer.data,
+                            "all_bus_status_filter_by_upcoming_date": upcoming_bus_statuses_serializer.data,"buses": data2})
 
 class LogOutSite(APIView):
     def get(self, request):
@@ -1087,7 +1086,7 @@ class LogOutSite(APIView):
 
         # return Response({"message": "User logged out successfully"})
 
-from rest_framework_simplejwt.tokens import AccessToken
+#from rest_framework_simplejwt.tokens import AccessToken
 import base64
 
 class LogOutApi(APIView):

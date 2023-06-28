@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -84,23 +84,23 @@ WSGI_APPLICATION = 'ticketbooking.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tickets',
-        'USER': 'postgres',
-        'PASSWORD': 'welcome',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'tickets',
+#         'USER': 'postgres',
+#         'PASSWORD': 'welcome',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -147,7 +147,7 @@ STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ticketbooking.settings')
 
 SWAGGER_YAML_FILE = BASE_DIR / 'ticketbooking' / 'swagger.yaml'
