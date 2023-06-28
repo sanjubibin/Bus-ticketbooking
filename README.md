@@ -1,5 +1,8 @@
 # Insructions
 
+## requirements.txt
+    pip freeze > requirements.txt 
+
 ## git instructions
     git init --> for initial working
     git add . --> for every change in project(check this)
@@ -15,3 +18,11 @@
     git commit -m "commit name"
     git remote add origin <git repository url>
     git push <git repository url>
+
+## git clone
+    git clone <git repository url>
+
+
+
+
+

@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: Sign Up API
+  title: Bus Ticketbooking API
   description: This API allows users to sign up for the AS Travels website.
   version: "1.0.0"
 host: localhost:8000
@@ -63,7 +63,7 @@ paths:
         - Log In
       summary: login to the User page or Admin page
       parameters:
-        - name: email
+        - name: username
           in: formData
           required: true
           type: string
@@ -173,12 +173,12 @@ paths:
       security:
         - Bearer: []
       summary: logout user
-      parameters:
-        - name: refresh_token
-          in: formData
-          required: true
-          type: string
-          description: enter the bearer token
+      # parameters:
+      #   - name: refresh_token
+      #     in: formData
+      #     required: true
+      #     type: string
+      #     description: enter the bearer token
       responses:
         200:
           description: successfully logged out

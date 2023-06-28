@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", views.LogIn.as_view(), name="login"),
-    path("rest/login", views.LogInApi.as_view(), name="rest_login"),
+    path("rest/login", views.LoginView.as_view(), name="rest_login"),
 
     path("signin", views.SignUp.as_view(), name="signin"),
     path("rest/signup", views.SignUpApi.as_view(), name="rest_signup"),
@@ -51,8 +51,9 @@ urlpatterns = [
     path("auth/home/userdetails", views.UserBookingDetails.as_view(), name="userdetail"),
     path("auth/rest/home/userdetails", views.UserBookingDetailsApi.as_view(), name="rest_userdetail"),
 
-    path("logout", views.logoutsite, name="logout"),
-    path("rest/logout", views.LogOutApi.as_view(), name="rest_logout"),
+    path("logout", views.LogOutSite.as_view(), name="logout"),
+    # path("rest/logout", views.LogoutView.as_view(), name="rest_logout"),
+    path("rest/logout", views.LogoutView.as_view(), name="rest_logout"),
 
     path("test", views.Test.as_view(), name="test"),
 ]

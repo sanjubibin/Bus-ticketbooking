@@ -31,6 +31,7 @@ from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import serializers
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_simplejwt.tokens import RefreshToken, OutstandingToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 #code here
 
 class SignUp(View):
@@ -138,41 +139,90 @@ class LogIn(View):
         else:
             msg = "Invalid username or password"
             return render(request, "app1/login.html", {"msg": msg})
-
-
-class LogInApi(APIView):
-    permission_classes = [AllowAny]
-
+        
+from rest_framework.authtoken.models import Token
+        
+class LoginView(APIView):
     def post(self, request):
-        email = self.request.POST.get("email")
-        password = self.request.POST.get("password")
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=username)
+
         except User.DoesNotExist:
-            msg = f"No user with this email '{email}' has registered yet"
+            msg = f"No user with this username '{username}' has registered yet"
             data = LogInApiSerializer({"message": msg})
             return Response(data.data)
-        auth_user = authenticate(request, username=user.username, email= user.email, password=password)
-        if auth_user is not None and not user.is_superuser:
-            #login(self.request, auth_user)    #--> only used when using templates
-            msg = "you are logged in as User"
-            refresh = RefreshToken.for_user(auth_user)
-            access_token = str(refresh.access_token)
-            return Response({"message": msg, "logged_email": email, "token": access_token})
-
         
+        auth_user = authenticate(username=username, password=password)
+
+        if auth_user is not None and not user.is_superuser:
+            login(self.request, auth_user)
+            token = Token.objects.get_or_create(user=auth_user)[0]
+            msg = "you are logged in as User"
+            return Response({"message": msg, "logged_user_email": user.email, "token": f"Token {token.key}"})
+
         elif auth_user is not None and user.is_superuser:
             login(self.request, auth_user)
-            refresh = RefreshToken.for_user(auth_user)
-            access_token = str(refresh.access_token)
+            token = Token.objects.get_or_create(user=auth_user)[0]
             msg = "you are logged in as Admin user"
-            return Response({"message": msg, "logged_email": email, "token": access_token})
+            return Response({"message": msg, "logged_user_email": user.email, "token":  f"Token {token.key}"})
         
         else:
             msg = "Invalid username or password"
-            data = LogInApiSerializer({"message": msg, "logged_email": email})
+            data = LogInApiSerializer({"message": msg})
             return Response(data.data)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = self.request.user
+        logout(self.request)
+        self.request.session.flush()
+        Token.objects.filter(user=user).delete()
+        return Response({"message": "successfully logged out"})
+
+
+
+
+# class LogInApi(ObtainAuthToken, APIView):
+
+    # permission_classes = [AllowAny]
+
+    # def post(self, request):
+    #     email = self.request.POST.get("email")
+    #     password = self.request.POST.get("password")
+
+    #     try:
+    #         user = User.objects.get(email=email)
+    #     except User.DoesNotExist:
+    #         msg = f"No user with this email '{email}' has registered yet"
+    #         data = LogInApiSerializer({"message": msg})
+    #         return Response(data.data)
+    #     auth_user = authenticate(request, username=user.username, email= user.email, password=password)
+    #     if auth_user is not None and not user.is_superuser:
+    #         #login(self.request, auth_user)    #--> only used when using templates
+    #         msg = "you are logged in as User"
+    #         refresh = RefreshToken.for_user(auth_user)
+
+    #         refresh_token = str(refresh.access_token)
+    #         return Response({"message": msg, "logged_email": email, "refresh token": refresh_token})
+
+        
+    #     elif auth_user is not None and user.is_superuser:
+    #         login(self.request, auth_user)
+    #         refresh = RefreshToken.for_user(auth_user)
+    #         refresh_token = str(refresh.access_token)
+    #         msg = "you are logged in as Admin user"
+    #         return Response({"message": msg, "logged_email": email, "refresh token": refresh_token})
+        
+    #     else:
+    #         msg = "Invalid username or password"
+    #         data = LogInApiSerializer({"message": msg, "logged_email": email})
+    #         return Response(data.data)
 
 
 class Home(LoginRequiredMixin, View):
@@ -191,9 +241,11 @@ class Home(LoginRequiredMixin, View):
             return redirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
 
-
+from rest_framework.authentication import TokenAuthentication
 from datetime import date  
 class HomeApi(APIView):
+
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -991,10 +1043,11 @@ class BusStatusAddApi(APIView):
             return Response({"all_bus_status_filter_by_expired_date": expired_bus_statuses_serializer.data,
                                                                      "all_bus_status_filter_by_upcoming_date": upcoming_bus_statuses_serializer.data,"buses": data2, "msg": "Bus with the given number already exists"})
 
-def logoutsite(request):
-    logout(request)
-    request.session.flush()
-    return render(request, "app1/logout.html")
+class LogOutSite(APIView):
+    def get(self, request):
+        logout(request)
+        self.request.session.flush()
+        return render(request, "app1/logout.html")
 
 # class LogOutApi(APIView):
 #     def get(self, request):
@@ -1013,26 +1066,49 @@ def logoutsite(request):
 #         self.request.user.access_token.delete()
 #         return Response({"msg": "You have been logged out successfully"})
 
-class LogOutApi(APIView):
-    permission_classes = [IsAuthenticated]
+# class LogOutApi(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        token = self.request.POST.get('refresh_token')
-        if token:
-            try:
-                refresh_token = RefreshToken(token)
-                refresh_token.blacklist()
-                return Response({'status': 'ok'})
-            except Exception as e:
-                return Response({'status': 'error', 'message': str(e)})
-        else:
-            return Response({'status': 'error', 'message': 'Token not provided'})
+#     def post(self, request, *args, **kwargs):
+#         token = self.request.POST.get('refresh_token')
+#         if token:
+#             try:
+#                 refresh_token = RefreshToken(token)
+#                 refresh_token.blacklist()
+#                 return Response({'status': 'ok'})
+#             except Exception as e:
+#                 return Response({'status': 'error', 'message': str(e)})
+#         else:
+#             return Response({'status': 'error', 'message': 'Token not provided'})
         #     except Exception as e:
         #         return Response({"message": "Invalid token"})
         # else:
         #     return Response({"message": "Refresh token is required"})
 
         # return Response({"message": "User logged out successfully"})
+
+from rest_framework_simplejwt.tokens import AccessToken
+import base64
+
+class LogOutApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        logout(self.request)
+        # authentication = JWTAuthentication()
+        # # try:
+        # auth_header = authentication.get_header(request)
+        # raw_token = authentication.get_raw_token(auth_header)
+        # decoded_token = base64.b64encode(str(raw_token).encode('utf-8'))
+        # access_token = RefreshToken(decoded_token)
+
+        # access_token.blacklist()
+
+        return Response({'status': 'ok'})
+        # except Exception as e:
+        #     return Response({'status': 'error', 'message': str(e)})
+
 
 
 ################  functions shortcuts  ###############
