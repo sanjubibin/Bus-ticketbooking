@@ -15,30 +15,29 @@
       opacity: 0;
     }
   } 
-  h2,h3 {
-    color: green;
-  }
 {% endblock css %}
 
 {% block body %}
     <form action="editplace" method="POST">
         {% csrf_token %}
 
-        <h2>Edit Places</h2> 
-        <h3>Select The Place to Edit the Bus</h3>
-        {{form.place_a.label}}
-        {{form.place_a}} <br><br>
-        <h3>Below changes will be edited</h3>
-        {{form.place_b.label}}
-        {{form.place_b}} <br><br>
-    
-        <label for="editplace">Edit Place</label>
-        <button id="editplace">Edit</button><br><br>
-    
-        <label for="back-admin">Back</label>
-        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>    
-        
-        <div id="fade-msg">
+        <header class="head">
+          <h1>Edit Places</h1>
+          <a href="{% url 'adminpage' %}">Back</a>
+        </header>
+         
+        <main class="main">
+          <h3>Select The Place to Edit the Bus</h3>
+          {{form.place_a.label}}
+          {{form.place_a}} <br><br>
+          <h3>Below changes will be edited</h3>
+          {{form.place_b.label}}
+          {{form.place_b}} <br><br>
+      
+          <label for="editplace">Edit Place</label>
+          <button id="editplace">Edit</button><br><br>
+
+          <div id="fade-msg">
             {{msg}}
         </div>
         
@@ -55,5 +54,15 @@
             </tr>
           {% endfor %}
         </table>
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+      </footer>
+
     </form>
 {% endblock body %}

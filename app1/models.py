@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
+
+
+class MediaUpload(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="images")
+    address = models.CharField(max_length=300)
+    mobile = models.CharField(max_length=10, unique=True)
+
 
 class Places(models.Model):
     places = models.CharField(max_length=100, unique=True)

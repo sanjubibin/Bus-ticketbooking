@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block title %}AS-Travels-User booking page{% endblock title %}  
+
+
+{% block body %}
+
+    <header class="head">
+        <h2>your profile</h2>
+        <label for="homepage">Back</label>
+        <a href="{% url 'homepage' %}">Back</a>
+    </header>
+
+    <main class="main">
+        <h3>Photo:<img src={{ MEDIA_URL }}{{ data.file }} alt="{{user.user.username}}'s photo" width="150"></h3>
+        <h3>Username:  {{user.username}}</h3>
+        <h3>Email: {{user.email}}</h3> 
+        <h3>Mobile No: {{data.mobile}}</h3>
+        <h3>Address: {{data.address}}</h3>
+        <h3>First Name: {{user.first_name}}</h3>
+        <h3>Last Name: {{user.last_name}}</h3>
+    </main>
+
+    
+    <footer class="footer">
+        <center>
+            <h1>...AS-TRAVELS official website...</h1>
+            <p>This website is designed to book bus ticket's in AS-Travels</p>
+            <p>EMAIL: sanjubibin44@gmail.com</p>
+        </center>
+    </footer>
+
+{% endblock %}
+

@@ -9,25 +9,45 @@
     <form action="auth" method="POST">
         {% csrf_token %}
 
-        <h1>ADMIN PAGE</h1>
+        <header class="head">     
+            
+        
 
-        <label for="place">Place: </label>
-        <a href="{% url 'addplace' %}" id="place">Add</a>
-        <a href="{% url 'editplace' %}" id="place">Edit</a>
-        <a href="{% url 'deleteplace' %}" id="place">Delete</a><br><br>
+                    <h1>ADMIN PAGE</h1>
+                    <a href="{% url 'addplace' %}">Add Place</a>
+                    <a href="{% url 'editplace' %}">Edit Place</a>
+                    <a href="{% url 'deleteplace' %}">Delete Place</a>
+            
+                    <a href="{% url 'addbus' %}">Add Bus</a>
+                    <a href="{% url 'editbus' %}">Edit Bus</a>
+                    <a href="{% url 'deletebus' %}">Delete Bus</a> 
+            
+                    <a href="{% url 'addbusstatus' %}">Add Bus Status</a>
+            
+                    <a href="{% url 'filteruser' %}">Fetch Booked User Details</a>
+            
+                    <a href="{% url 'logout' %}">Log Out</a>
+    
 
-        <label for="bus">Add Bus</label>
-        <a href="{% url 'addbus' %}" id="bus">Add</a>
-        <a href="{% url 'editbus' %}" id="bus">Edit</a>
-        <a href="{% url 'deletebus' %}" id="bus">Delete</a>  <br><br>
+                
 
-        <label for="addbusstatus">Add Bus Status</label>
-        <a href="{% url 'addbusstatus' %}" id="addbusstatsus">Press</a><br><br>
 
-        <label for="filter_search">Fetch Booked User Details</label>
-        <a href="{% url 'filteruser' %}" id="filter_search">Press</a><br><br>
+            
 
-        <label for="logout">Logout your account:</label>
-        <a href="{% url 'logout' %}" id="logout">Log Out</a>
+
+           
+        </header>
+        
+        <main class="main">
+
+        </main>
+
+        <footer class="footer">
+            <center>
+                <h1>...AS-TRAVELS official website...</h1>
+                <p>This website is designed to book bus ticket's in AS-Travels</p>
+                <p>EMAIL: sanjubibin44@gmail.com</p>
+            </center>
+        </footer>
     </form>
 {% endblock body %}

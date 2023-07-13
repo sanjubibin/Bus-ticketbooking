@@ -17,18 +17,19 @@
         opacity: 0;
         }
     }
-
-    h2,h3 {
-      color: green;
-    }
 {% endblock css %}
 
 {% block body %}
     <form action="addbus" method="POST">
         {% csrf_token %}
 
-        <h2>Add Bus </h2>
-        {{form.bus_no.label}}
+        <header class="head">
+          <h1>Add Bus </h1>
+          <a href="{% url 'adminpage' %}">Back</a>
+        </header>
+        
+        <main class="main">
+                  {{form.bus_no.label}}
         {{form.bus_no}} <br><br>
         {{form.bus_name.label}}
         {{form.bus_name}} <br><br>
@@ -41,9 +42,6 @@
          
         <label for="add_bus">Add Bus</label>
         <button id="add_bus">Add</button><br><br>
-
-        <label for="back-admin">Back</label>
-        <a href="{% url 'adminpage' %}" id="back-admin">Back</a>
 
         <h2>Bus Table</h2>
         <table>
@@ -62,6 +60,17 @@
               <td>{{bus.total_seats}}</td>
               <td>{{bus.bus_type}}</td>
             </tr>
-          {% endfor %}
+            {% endfor %}
+        </table>
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+        </footer>
+      
     </form>
 {% endblock body %}

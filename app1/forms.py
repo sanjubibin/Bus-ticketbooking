@@ -3,7 +3,12 @@ from django.utils import timezone
 from .models import Places, UserBooking, Bus, BusStatus
 from django.contrib.auth.models import User
 
-
+class ProfileForm(forms.Form):
+    user_image = forms.ImageField(required=True, label="Profile Photo")
+    address = forms.CharField(required=True)
+    mobile = forms.CharField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
 
 class SignInForm(forms.Form):
     username = forms.CharField(max_length=50, required=True, label="Your Name")

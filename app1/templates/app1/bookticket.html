@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}SA-travels-book tickets{% endblock title %}
 
@@ -23,32 +24,40 @@
 {% block body %}
     <form action="bookticket" method="POST">
         {% csrf_token %}
-        <h1>Book Ticket</h1>
+        <header class="head">
+          <h1>Book Ticket</h1>
+          <a href="{% url 'checkavailability' %}">Check Bus Availability</a>
+          <a href="{% url 'homepage' %}">Back</a>
+        </header>
 
-        {% if is_it %}
-          <div id="msg">
-            {{bus_select}}
-          </div>
-        {% endif %}
-        {{form.bus_no.label}}
-        {{form.bus_no}} <br><br>
-        {{form.no_of_seats.label}} 
-        {{form.no_of_seats}} <br><br>
-        <div id="fade-msg">
+        <main class="main">
+          {% if is_it %}
+            <div id="msg">
+              {{bus_select}}
+            </div>
+          {% endif %}
+          {{form.bus_no.label}}
+          {{form.bus_no}} <br><br>
+          {{form.no_of_seats.label}} 
+          {{form.no_of_seats}} <br><br>
+          {{form.user_pickup_point.label}}
+          {{form.user_pickup_point}} <br><br>
+          {{form.user_dropdown_point.label}}
+          {{form.user_dropdown_point}} <br><br>
+          <label for="myButton">Book Ticket</label>
+          <button id="myButton" >Press Here</button> <br>
+          <div id="fade-msg">
             {{error}}
         </div>
-        {{form.user_pickup_point.label}}
-        {{form.user_pickup_point}} <br><br>
-        {{form.user_dropdown_point.label}}
-        {{form.user_dropdown_point}} <br><br>
+        </main>
 
-        <label for="bookticket">Press To Book Tickets</label>
-        <button id="bookticket">Book now</button> <br><br>
-
-        <label for="checkavailability">Check Bus Availability:</label>
-        <a href="{% url 'checkavailability' %}" id="checkavailability">Press</a><br><br>
-
-        <label for="homepage">Back</label>
-        <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+        </footer>
     </form>
 {% endblock body %}
+

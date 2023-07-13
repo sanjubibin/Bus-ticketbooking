@@ -7,6 +7,10 @@
 {% block body %}
     <h1>Available buses for you</h1>
 
+    <nav class="sidenav">
+    <a href="{% url 'homepage' %}">Back</a><br><br>
+    </nav>
+
     {% if data1 %}
     <table>
       <tr>
@@ -36,7 +40,4 @@
 
     <label for="bookticket">Book Ticket From Here:</label>
     <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
-
-    <label for="homepage">Back</label>
-    <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
 {% endblock body %}

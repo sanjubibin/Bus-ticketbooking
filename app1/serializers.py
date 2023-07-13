@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Places, Bus, BusStatus, UserBooking
+from .models import Places, Bus, BusStatus, UserBooking, MediaUpload
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class PlacesSerializer(ModelSerializer):
     places = serializers.CharField(max_length=100)
@@ -34,3 +35,14 @@ class SignUpApiSerializer(serializers.Serializer):
 class LogInApiSerializer(serializers.Serializer):
     message = serializers.CharField(required=False)
     logged_email = serializers.EmailField(required=False)
+
+
+class MediaUploadSerializer(ModelSerializer):
+    class Meta:
+        model = MediaUpload
+        fields = "__all__"
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"

@@ -40,7 +40,7 @@ def all_bus_status():
 
 from datetime import date
 def all_bus_status_filter_by_upcoming_date():
-    bus_statuses = BusStatus.objects.filter(start_date__gte=date.today()).order_by("id")
+    bus_statuses = BusStatus.objects.filter(start_date__gte=date.today()).order_by("-seats_available")
     all_bus_status = [{
         "id": bus_status.pk,
         "bus_id": bus_status.bus.pk,

@@ -5,15 +5,33 @@
 {% block css %}
 #error_message {
     color: red;
-}
+    animation: fadeOut 10s ease forwards;
+  }
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  } 
 {% endblock css %}
 
 {% block body %}
-    <h1>Something went wrong!!</h1>
+    <header class="head">
+        <h1>Something went wrong!!</h1>
+        <a href="{% url 'bookticket' %}">Go Back</a>
+    </header>
 
-    <div id="error_message">{{message}}</div> <br>
-
-    <label for="back-page">Go Back</label>
-    <button onclick="history.back()" id="back-page">Go Back</button>
-
+    <main>
+        <p style="font-size: large;" class="error_message">{{message}}</p>
+    </main>
+    
+    <footer class="footer">
+        <center>
+            <h1>...AS-TRAVELS official website...</h1>
+            <p>This website is designed to book bus ticket's in AS-Travels</p>
+            <p>EMAIL: sanjubibin44@gmail.com</p>
+        </center>
+    </footer>
 {% endblock body %}

@@ -19,9 +19,6 @@
     opacity: 0;
     }
 }
-h2,h3 {
-  color: green;
-}
 {% endblock css %}
 
 
@@ -29,89 +26,103 @@ h2,h3 {
     <form action="addbusstatus" method="POST">
         {% csrf_token %}
 
-        <h2>Add Bus Status</h2>
+        <header class="head">
+          <h1>Add Bus Status</h1>
+          <a href="{% url 'adminpage' %}">Back</a>
+        </header>
         
-        {{form.bus_no.label}}
-        {{form.bus_no}} <br><br>
-        {{form.seats_available.label}}
-        {{form.seats_available}} <br><br>
-        {{form.start_place.label}}
-        {{form.start_place}} <br><br>
-        {{form.start_date.label}}
-        {{form.start_date}} <br><br>
-        {{form.start_time.label}}
-        {{form.start_time}} <br><br>
-        {{form.end_place.label}}
-        {{form.end_place}} <br><br>
-        {{form.end_date.label}}
-        {{form.end_date}} <br><br>
-        {{form.end_time.label}}
-        {{form.end_time}} <br><br>
+        <main class="main">
+          {{form.bus_no.label}}
+          {{form.bus_no}} <br><br>
+          {{form.seats_available.label}}
+          {{form.seats_available}} <br><br>
+          {{form.start_place.label}}
+          {{form.start_place}} <br><br>
+          {{form.start_date.label}}
+          {{form.start_date}} <br><br>
+          {{form.start_time.label}}
+          {{form.start_time}} <br><br>
+          {{form.end_place.label}}
+          {{form.end_place}} <br><br>
+          {{form.end_date.label}}
+          {{form.end_date}} <br><br>
+          {{form.end_time.label}}
+          {{form.end_time}} <br><br>
+          
+          <div id="fade-msg">{{msg}}</div>
+  
+          <label for="ad_busstatus">Add Bus Status</label>
+          <button id="add_busstatus">Add</button><br><br>
+  
+          <h2>Active Bus Status Table</h2>
         
-        <div id="fade-msg">{{msg}}</div>
-
-        <label for="ad_busstatus">Add Bus Status</label>
-        <button id="add_busstatus">Add</button><br><br>
-
-        <label for="back-admin">Back</label>
-        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>
-
-        <h2>Active Bus Status Table</h2>
-      
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus Id</th>
-            <th>Seats Available</th>
-            <th>Start Place Id</th>
-            <th>Start Date</th>
-            <th>Start Time</th>
-            <th>End Place Id</th>
-            <th>End Date</th>
-            <th>End Time</th>
-          </tr>
-          {% for bus in all_bus_status_filter_by_upcoming_date %}
+          <table>
             <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_id}}</td>
-              <td>{{bus.seats_available}}</td>
-              <td>{{bus.start_place_id}}</td>
-              <td>{{bus.start_date}}</td>
-              <td>{{bus.start_time}}</td>
-              <td>{{bus.end_place_id}}</td>
-              <td>{{bus.end_date}}</td>
-              <td>{{bus.end_time}}</td>
+              <th>Table Id</th>
+              <th>Bus Id</th>
+              <th>Seats Available</th>
+              <th>Start Place Id</th>
+              <th>Start Date</th>
+              <th>Start Time</th>
+              <th>End Place Id</th>
+              <th>End Date</th>
+              <th>End Time</th>
             </tr>
-          {% endfor %}
-        </table> <br><br>
-
-        <h2>Expired Bus Status Table</h2>
-      
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus Id</th>
-            <th>Seats Available</th>
-            <th>Start Place Id</th>
-            <th>Start Date</th>
-            <th>Start Time</th>
-            <th>End Place Id</th>
-            <th>End Date</th>
-            <th>End Time</th>
-          </tr>
-          {% for bus in all_bus_status_filter_by_expired_date %}
+            {% for bus in all_bus_status_filter_by_upcoming_date %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_id}}</td>
+                <td>{{bus.seats_available}}</td>
+                <td>{{bus.start_place}}</td>
+                <td>{{bus.start_date}}</td>
+                <td>{{bus.start_time}}</td>
+                <td>{{bus.end_place}}</td>
+                <td>{{bus.end_date}}</td>
+                <td>{{bus.end_time}}</td>
+              </tr>
+            {% endfor %}
+          </table> <br><br>
+  
+          {% if all_bus_status_filter_by_expired_date %}
+          <h2>Expired Bus Status Table</h2>
+        
+          <table>
             <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_id}}</td>
-              <td>{{bus.seats_available}}</td>
-              <td>{{bus.start_place_id}}</td>
-              <td>{{bus.start_date}}</td>
-              <td>{{bus.start_time}}</td>
-              <td>{{bus.end_place_id}}</td>
-              <td>{{bus.end_date}}</td>
-              <td>{{bus.end_time}}</td>
+              <th>Table Id</th>
+              <th>Bus Id</th>
+              <th>Seats Available</th>
+              <th>Start Place Id</th>
+              <th>Start Date</th>
+              <th>Start Time</th>
+              <th>End Place Id</th>
+              <th>End Date</th>
+              <th>End Time</th>
             </tr>
-          {% endfor %}
-        </table>
+            {% for bus in all_bus_status_filter_by_expired_date %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_id}}</td>
+                <td>{{bus.seats_available}}</td>
+                <td>{{bus.start_place}}</td>
+                <td>{{bus.start_date}}</td>
+                <td>{{bus.start_time}}</td>
+                <td>{{bus.end_place}}</td>
+                <td>{{bus.end_date}}</td>
+                <td>{{bus.end_time}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+          {% endif %}
+
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+      </footer>
+
     </form>
 {% endblock body %}

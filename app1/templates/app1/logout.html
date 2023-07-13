@@ -5,10 +5,22 @@ SA-travels-logout page
 {% endblock title %}
 
 {% block body %}
-<h1>you are logged out</h1>
-{{msg_unauth}}
+    <header class="head">
+        <h1>you are logged out</h1>
+        <a href="{% url 'login' %}">Back To Login Page</a>
+    </header>
 
-<a href="{% url 'login' %}" id="login">Back To Login Page</a><br><br>
+    <main class="main">
+        {{msg_unauth}}
+    </main>
+
+    <footer class="footer">
+        <center>
+            <h1>...AS-TRAVELS official website...</h1>
+            <p>This website is designed to book bus ticket's in AS-Travels</p>
+            <p>EMAIL: sanjubibin44@gmail.com</p>
+        </center>
+    </footer>
 
 {% endblock body %}
 

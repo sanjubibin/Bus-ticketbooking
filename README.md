@@ -29,7 +29,7 @@
         spec = yaml.load(file.read())
     to 
         spec = yaml.load(file.read(), Loader=yaml.Loader)
-### path --> <env name>/lib/python3.10/site-packages/swagger_ui/swagger_base.html
+### path --> <env name>/lib/python3.10/site-packages/swagger_ui/templates/swagger_base.html
     change the line 1 of
         {% load staticfiles %}
     to 

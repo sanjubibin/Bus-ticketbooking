@@ -5,9 +5,6 @@
 
 
 {% block css %}
-    h3, h2 {
-        color: green;
-    }
     #fade-msg {
         color: red;
         animation: fadeOut 10s ease forwards;
@@ -20,46 +17,55 @@
           opacity: 0;
         }
     } 
-
-    h2,h3 {
-      color: green;
-    }
 {% endblock css %}
 
 
 {% block body %}
     <form action="deletebus" method="POST">
         {% csrf_token %}
-        <h2>Select The Bus Id to Delete the Bus</h2>
-        {{form.bus_id.label}}
-        {{form.bus_id}} <br><br>
-         
-        <label for="add_bus">Delete Bus</label>
-        <button id="add_bus">Delete</button><br><br>
 
-        <label for="back-admin">Back</label>
-        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>
+        <header class="head">
+          <h1>Delete Page</h1>
+          <a href="{% url 'adminpage' %}">Back</a>
+        </header>
 
-        <div id="fade-msg">{{msg}}</div>
-
-        <h2>Bus Table</h2>
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus No</th>
-            <th>Bus Name</th>
-            <th>Total Seats</th>
-            <th>Bus Type</th>
-          </tr>
-          {% for bus in buses %}
+        <main class="main">
+          <h2>Select The Bus Id to Delete the Bus</h2>
+          {{form.bus_id.label}}
+          {{form.bus_id}} <br><br>
+           
+          <label for="add_bus">Delete Bus</label>
+          <button id="add_bus">Delete</button><br><br>
+  
+          <div id="fade-msg">{{msg}}</div>
+  
+          <h2>Bus Table</h2>
+          <table>
             <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_no}}</td>
-              <td>{{bus.bus_name}}</td>
-              <td>{{bus.total_seats}}</td>
-              <td>{{bus.bus_type}}</td>
+              <th>Table Id</th>
+              <th>Bus No</th>
+              <th>Bus Name</th>
+              <th>Total Seats</th>
+              <th>Bus Type</th>
             </tr>
-          {% endfor %}
-        <table>
+            {% for bus in buses %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_no}}</td>
+                <td>{{bus.bus_name}}</td>
+                <td>{{bus.total_seats}}</td>
+                <td>{{bus.bus_type}}</td>
+              </tr>
+            {% endfor %}
+          <table>
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+      </footer>
     </form>
 {% endblock body %}

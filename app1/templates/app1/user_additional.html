@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+SA Travels-login page
+{% endblock %}
+
+{% block css %}
+#fade-msg {
+  color: red;
+  animation: fadeOut 10s ease forwards;
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+} 
+{% endblock css %}
+
+{% block body %}
+
+  <header class="head">
+    <h1>Complete the profile</h1>
+    <a href="{% url 'homepage' %}">Back</a>
+  </header>
+
+  <main class="main">
+    <form method="POST" enctype="multipart/form-data" >  
+      {% csrf_token %}
+      {{ form.user_image.label }} 
+      {{form.user_image}}<br><br>
+      {{form.address.label}}
+      {{form.address}} <br><br>
+      {{form.mobile.label}}
+      {{form.mobile}} <br><br>
+      {{form.first_name.label}}
+      {{form.first_name}} <br><br>
+      {{form.last_name.label}}
+      {{form.last_name}} <br><br>
+      <button>submit</button> <br><br>
+      <div id="fade-msg">{{msg}}</div>
+    </form>
+  </main>
+
+
+  <footer class="footer">
+    <center>
+        <h1>...AS-TRAVELS official website...</h1>
+        <p>This website is designed to book bus ticket's in AS-Travels</p>
+        <p>EMAIL: sanjubibin44@gmail.com</p>
+    </center>
+  </footer>
+
+{% endblock %}

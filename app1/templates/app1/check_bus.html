@@ -23,20 +23,31 @@
 {% block body %}
     <form action="checkavailability" method="POST">
         {% csrf_token %}
+        <header class="head">
+          <h1>Check Available Buses</h1>
+          <a href="{% url 'bookticket' %}">Booking Page</a>
+          <a href="{% url 'homepage' %}">Back</a>
+        </header>
 
-        <h1>Check Available Buses</h1>
+        <main class="main">
+          {{form.route_from.label}}
+          {{form.route_from}} <br><br>
+          {{form.destination_to.label}}
+          {{form.destination_to}} <br><br>
+          {{form.date_of_travel.label}}
+          {{form.date_of_travel}} <br><br>
 
-        {{form}} <br><br>
-        <button>Check availability</button> <br><br>
-        
-        <div id="fade-msg">
-          {{ no_bus }}
-        </div>
+          <button>Check availability</button> <br><br>       
 
-        <label for="bookticket">Go To Book Page:</label>
-        <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
-    
-        <label for="homepage">Back</label>
-        <a href="{% url 'homepage' %}" id="homepage">Back</a><br><br>
+          <div id="fade-msg">{{ no_bus }}</div>
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+        </footer>
     </form>
 {% endblock body %}

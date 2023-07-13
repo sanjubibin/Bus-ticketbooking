@@ -25,24 +25,36 @@ SA Travels-signup page
 {% endblock css %}
 
 {% block body %}
-  <h1>SIGNUP PAGE</h1>
-  <form action="signin" method="POST" >
-    {% csrf_token %}
-    
-    {{form.username.label}}
-    {{form.username}} <br><br>
-    {{form.email.label}}
-    {{form.email}} <br><br>
-    {{form.password1.label}}
-    {{form.password1}} <br><br>
-    {{form.password2.label}}
-    {{form.password2}} <br><br>
+  <header class="head">
+    <h1>SIGNUP PAGE</h1>
+    <a href="{% url 'login' %}">Already a User</a>
+  </header>
 
-    {% if message %}<div id="fade-msg" class="line-breaks">{{message}}</div>{% endif %} <br>
+  <main class="main">
+    <form action="signin" method="POST" >
+      {% csrf_token %}
+      
+      {{form.username.label}}
+      {{form.username}} <br><br>
+      {{form.email.label}}
+      {{form.email}} <br><br>
+      {{form.password1.label}}
+      {{form.password1}} <br><br>
+      {{form.password2.label}}
+      {{form.password2}} <br><br>
+  
+      <button>Sign Up</button><br>
+  
+      {% if message %}<div id="fade-msg" class="line-breaks">{{message}}</div>{% endif %} 
+  </main>
 
-    <button>Sign Up</button><br><br>
+  <footer class="footer">
+    <center>
+        <h1>...AS-TRAVELS official website...</h1>
+        <p>This website is designed to book bus ticket's in AS-Travels</p>
+        <p>EMAIL: sanjubibin44@gmail.com</p>
+    </center>
+</footer>
 
-    <label for="login">Already a User:</label>
-    <a href="{% url 'login' %}" id="login">Log In</a>
   </form>
 {% endblock body %}

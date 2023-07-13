@@ -5,101 +5,97 @@ SA Travels-user page
 {% endblock title %}
 
 {% block css %}
-    #fade-msg {
-    color: red;
-    animation: fadeOut 10s ease forwards;
-    }
-    @keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  } 
-  h2 {
-    color: green;
-  }
+
 {% endblock css %}
 
 {% block body %}
     <form action="home" method="POST">
         {% csrf_token %}
+        <header class="head">
+          <h1>HOME PAGE</h1>
+          
+          <h2>User {{username|title}}</h2>
+        
+          <nav>
+            <center>
+            <a href="{% url 'checkavailability' %}">Check Availability</a>
 
-        <h1>Welcome {{username|title}}</h1>
+            <a href="{% url 'bookticket' %}">Book ticket</a>
+    
+            <a href="{% url 'userdetail' %}">Your Details</a>
+    
+            <a href="{% url 'Addprofile' %}">Add or Edit Your Profile</a>
+    
+            <a href="{% url 'viewprofile' %}">View Your Profile</a>
+    
+            <a href="{% url 'logout' %}">Log Out</a><br><br>
+            </center>
+          </nav>
+        </header>
 
-        <label for="checkavailability">Check Bus availability:</label>
-        <a href="{% url 'checkavailability' %}" id="checkavailability">Press</a><br><br>
+        
 
-        <label for="bookticket">Book ticket:</label>
-        <a href="{% url 'bookticket' %}" id="bookticket">Press</a><br><br>
-
-        <label for="userdetail">Your Details</label>
-        <a href="{% url 'userdetail' %}">press</a> <br><br>
-
-        <label for="logout">Logout your account:</label>
-        <a href="{% url 'logout' %}" id="logout">Log Out</a><br><br>
-
-        <h2>Place's Table</h2>
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Place</th>
-          </tr>
-          {% for place in places %}
+        <main class="main">
+          <h3>Welcome to AS-Travels</h3>
+          <p>Places that we cover: {% for place in places %}{{place.place}}, {% endfor %}</p>
+  
+          <h3>Buses that we have</h3>
+          <table>
             <tr>
-              <td>{{place.id}}</td>
-              <td>{{place.place}}</td>
+              <th>Table Id</th>
+              <th>Bus No</th>
+              <th>Bus Name</th>
+              <th>Total Seats</th>
+              <th>Bus Type</th>
             </tr>
-          {% endfor %}
-        </table><br>
-
-        <h2>Bus Table</h2>
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus No</th>
-            <th>Bus Name</th>
-            <th>Total Seats</th>
-            <th>Bus Type</th>
-          </tr>
-          {% for bus in buses %}
+            {% for bus in buses %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_no}}</td>
+                <td>{{bus.bus_name}}</td>
+                <td>{{bus.total_seats}}</td>
+                <td>{{bus.bus_type}}</td>
+              </tr>
+            {% endfor %}
+          </table><br>
+  
+          <h3>Active Bus Avilable Now</h3>
+          <table>
             <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_no}}</td>
-              <td>{{bus.bus_name}}</td>
-              <td>{{bus.total_seats}}</td>
-              <td>{{bus.bus_type}}</td>
+              <th>Table Id</th>
+              <th>Bus Id</th>
+              <th>Seats Available</th>
+              <th>Start Place Id</th>
+              <th>Start Date</th>
+              <th>Start Time</th>
+              <th>End Place Id</th>
+              <th>End Date</th>
+              <th>End Time</th>
             </tr>
-          {% endfor %}
-        </table><br>
+            {% for bus in all_bus_status %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_id}}</td>
+                <td>{{bus.seats_available}}</td>
+                <td>{{bus.start_place}}</td>
+                <td>{{bus.start_date}}</td>
+                <td>{{bus.start_time}}</td>
+                <td>{{bus.end_place}}</td>
+                <td>{{bus.end_date}}</td>
+                <td>{{bus.end_time}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </main>
 
-        <h2>Active Bus Status Table</h2>
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus Id</th>
-            <th>Seats Available</th>
-            <th>Start Place Id</th>
-            <th>Start Date</th>
-            <th>Start Time</th>
-            <th>End Place Id</th>
-            <th>End Date</th>
-            <th>End Time</th>
-          </tr>
-          {% for bus in all_bus_status %}
-            <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_id}}</td>
-              <td>{{bus.seats_available}}</td>
-              <td>{{bus.start_place_id}}</td>
-              <td>{{bus.start_date}}</td>
-              <td>{{bus.start_time}}</td>
-              <td>{{bus.end_place_id}}</td>
-              <td>{{bus.end_date}}</td>
-              <td>{{bus.end_time}}</td>
-            </tr>
-          {% endfor %}
-        </table>
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+        </footer>
     </form>
 {% endblock body %}
+
+

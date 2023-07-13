@@ -14,8 +14,36 @@
     <style>
         {% block css %}{% endblock css %}
     </style>
+    {% block other %}{% endblock other %}
 </head>
 <body class="body">
-    {% block body %}{% endblock body %}
+    <center>
+        {% block body %}
+
+        <main>{% block main %}{% endblock main %}</main>
+
+        <article>{% block article %}{% endblock article %}</article>
+
+        <section>{% block section %}{% endblock section %}</section>
+
+        <aside>{% block aside %}{% endblock aside %}</aside>
+
+        <footer class="footer">
+            <center>
+                <h1>...AS-TRAVELS official website...</h1>
+                <p>This website is designed to book bus ticket's in AS-Travels</p>
+                <p>EMAIL: sanjubibin44@gmail.com</p>
+            </center>
+        </footer>
+
+        {% endblock body %}
+    </center>
 </body>
 </html>
+
+
+{% comment %} 
+
+for html tag arguments with "id" name use "#" for css styling, for "class" name use "." for css styling
+
+{% endcomment %}

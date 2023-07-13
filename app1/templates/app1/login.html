@@ -20,20 +20,31 @@ SA Travels-login page
 {% endblock css %}
 
 {% block body %}
-    <h1>LOGIN PAGE</h1>
     <form action="" method="POST">
         {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-    
-        <label for="password1">Passsword</label>
-        <input type="password" id="password1" name="password" required><br><br>
+        <header class="head">
+          <h1>LOGIN PAGE</h1>
+          <a href="{% url 'signin' %}">Don't Have Account</a>
+        </header>
+        
+        <main class="main">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required><br><br>
+      
+          <label for="password1">Passsword</label>
+          <input type="password" id="password1" name="password" required><br><br>
+  
+          <button>Log In</button><br>
+  
+          <div id="fade-msg">{{msg}}</div><br>
+        </main>
 
-        <button>Log In</button><br>
-
-        <div id="fade-msg">{{msg}}</div><br>
-
-        <label for="sigin">Don't Have Account:</label>
-        <a href="{% url 'signin' %}" id="sigin">Sign Up</a><br><br>
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+        </footer>
     </form>
 {% endblock body %}

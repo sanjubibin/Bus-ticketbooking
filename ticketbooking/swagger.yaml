@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   title: Bus Ticketbooking API
-  description: This API allows users to sign up for the AS Travels website.
+  description: This API allows to interact AS Travels website.
   version: "1.0.0"
 host: localhost:8000
 
@@ -67,7 +67,7 @@ paths:
           in: formData
           required: true
           type: string
-          description: email of the user to login
+          description: username of the user to login
         - name: password
           in: formData
           required: true
@@ -312,6 +312,11 @@ paths:
           in: formData
           required: true
           type: string
+          enum:
+            - sleeper
+            - ac_sleeper
+            - seated
+            - ac_seated
           description: enter the bsu type
       responses:
         200:
@@ -360,6 +365,11 @@ paths:
           in: formData
           required: true
           type: string
+          enum:
+            - sleeper
+            - ac_sleeper
+            - seated
+            - ac_seated
           description: enter the bus type
       responses:
         200:
@@ -418,6 +428,9 @@ paths:
           in: formData
           required: true
           type: string
+          enum:
+            - email
+            - username
           description: only select "email" or "username"
         - name: data
           in: formData
@@ -491,6 +504,67 @@ paths:
       responses:
         200:
           description: bus status added successfully
+
+  /auth/rest/addprofile:
+    get:
+      operationId: add_profile_getrequest
+      tags:
+        - User Page
+      security:
+        - Bearer: []
+      summary: display whether the user is logged in 
+      responses:
+        200:
+          description: successful
+    post:
+      operationId: add_profile_postrequest
+      tags:
+        - User Page
+      security:
+        - Bearer: []
+      summary: edit the user's photo, address, and mobile number
+      parameters:
+        - name: user_image
+          in: formData
+          required: true
+          type: file
+          description: upload the image
+        - name: address
+          in: formData
+          required: true
+          type: string
+          description: enter your address
+        - name: mobile
+          in: formData
+          required: true
+          type: string
+          description: enter your mobile number
+        - name: first_name
+          in: formData
+          required: true
+          type: string
+          description: enter your first_name
+        - name: last_name
+          in: formData
+          required: true
+          type: string
+          description: enter your last_name    
+      responses:
+        200:
+          description: profile added successfully 
+
+  /auth/rest/viewprofile:
+    get:
+      operationId: view_profile_getrequest
+      tags:
+        - User Page
+      security:
+        - Bearer: []
+      summary: display the profile of the user 
+      responses:
+        200:
+          description: successful
+
 
 
 

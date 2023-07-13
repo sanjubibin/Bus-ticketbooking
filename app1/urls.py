@@ -55,5 +55,9 @@ urlpatterns = [
     # path("rest/logout", views.LogoutView.as_view(), name="rest_logout"),
     path("rest/logout", views.LogoutView.as_view(), name="rest_logout"),
 
-    path("test", views.Test.as_view(), name="test"),
+    path("auth/addprofile", views.EditProfileView.as_view(), name="Addprofile"),
+    path("auth/rest/addprofile", views.EditProfileViewApi.as_view(), name="rest_Addprofile"),
+
+    path("auth/viewprofile", views.ViewProfile.as_view(), name="viewprofile"),
+    path("auth/rest/viewprofile", views.ViewProfileApi.as_view(), name="rest_viewprofile")
 ]

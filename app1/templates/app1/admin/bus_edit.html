@@ -4,9 +4,6 @@
 {% block title %}AS_Travels{% endblock title %}
 
 {% block css %}
-    h3, h2 {
-        color: green;
-    }
     #fade-msg {
         color: red;
         animation: fadeOut 10s ease forwards;
@@ -19,55 +16,65 @@
           opacity: 0;
         }
     } 
-
-    h2,h3 {
-      color: green;
-    }
 {% endblock css %}
 
 
 {% block body %}
     <form action="editbus" method="POST">
         {% csrf_token %}
-        <h2>Select The Bus Id to Edit the Bus</h2>
-        {{form.bus_id.label}} 
-        {{form.bus_id}} <br><br>
-        <h2>Below changes will be edited</h2>
-        {{form.bus_no.label}}
-        {{form.bus_no}} <br><br>
-        {{form.bus_name.label}}
-        {{form.bus_name}} <br><br>
-        {{form.total_seats.label}}
-        {{form.total_seats}} <br><br>
-        {{form.bus_type.label}}
-        {{form.bus_type}} <br><br>
 
-        <div id="fade-msg">{{msg}}</div>
-         
-        <label for="add_bus">Edit Bus</label>
-        <button id="add_bus">Edit</button><br><br>
-
-        <label for="back-admin">Back</label>
-        <a href="{% url 'adminpage' %}" id="back-admin">Back</a> <br><br>
-
-        <h2>Bus Table</h2>
-        <table>
-          <tr>
-            <th>Table Id</th>
-            <th>Bus No</th>
-            <th>Bus Name</th>
-            <th>Total Seats</th>
-            <th>Bus Type</th>
-          </tr>
-          {% for bus in buses %}
+        <header class="head">
+          <h1>Bus Edit</h1>
+          <a href="{% url 'adminpage' %}">Back</a>
+        </header>
+        
+        <main class="main">
+          <h2>Select The Bus Id to Edit the Bus</h2>
+          {{form.bus_id.label}} 
+          {{form.bus_id}} <br><br>
+          <h2>Below changes will be edited</h2>
+          {{form.bus_no.label}}
+          {{form.bus_no}} <br><br>
+          {{form.bus_name.label}}
+          {{form.bus_name}} <br><br>
+          {{form.total_seats.label}}
+          {{form.total_seats}} <br><br>
+          {{form.bus_type.label}}
+          {{form.bus_type}} <br><br>
+  
+          <div id="fade-msg">{{msg}}</div>
+           
+          <label for="add_bus">Edit Bus</label>
+          <button id="add_bus">Edit</button><br><br>
+  
+          <h2>Bus Table</h2>
+          <table>
             <tr>
-              <td>{{bus.id}}</td>
-              <td>{{bus.bus_no}}</td>
-              <td>{{bus.bus_name}}</td>
-              <td>{{bus.total_seats}}</td>
-              <td>{{bus.bus_type}}</td>
+              <th>Table Id</th>
+              <th>Bus No</th>
+              <th>Bus Name</th>
+              <th>Total Seats</th>
+              <th>Bus Type</th>
             </tr>
-          {% endfor %}
-        </table>
+            {% for bus in buses %}
+              <tr>
+                <td>{{bus.id}}</td>
+                <td>{{bus.bus_no}}</td>
+                <td>{{bus.bus_name}}</td>
+                <td>{{bus.total_seats}}</td>
+                <td>{{bus.bus_type}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </main>
+
+        <footer class="footer">
+          <center>
+              <h1>...AS-TRAVELS official website...</h1>
+              <p>This website is designed to book bus ticket's in AS-Travels</p>
+              <p>EMAIL: sanjubibin44@gmail.com</p>
+          </center>
+      </footer>
+
     </form>
 {% endblock body %}

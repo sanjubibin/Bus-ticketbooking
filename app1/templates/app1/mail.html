@@ -5,13 +5,22 @@
 
 
 {% block body %}
-    <h1>Ticket booked succesfully</h1>
-    <h2>Check Mail for confirmation</h2> <br><br>
+    <header class="head">
+        <h1>Ticket booked succesfully</h1>
+        <a href="{% url 'logout' %}">Logout Your Account</a>
+        <a href="{% url 'homepage' %}">Back To Homepage</a>
+    </header>
 
-    <label for="logout">Logout your account:</label>
-    <a href="{% url 'logout' %}" id="logout">Log Out</a><br><br>
+    <main class="main">
+        <center><h2>Check Mail for confirmation</h2></center>
+    </main>
 
-    <label for="homepage">Back to homepage</label>
-    <a href="{% url 'homepage' %}" id="homepage">Back</a>
+    <footer class="footer">
+        <center>
+            <h1>...AS-TRAVELS official website...</h1>
+            <p>This website is designed to book bus ticket's in AS-Travels</p>
+            <p>EMAIL: sanjubibin44@gmail.com</p>
+        </center>
+    </footer>
 
 {% endblock body %}

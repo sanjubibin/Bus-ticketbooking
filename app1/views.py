@@ -5,7 +5,7 @@ from django.views import View
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import SignInForm
-from .forms import BusForm, PlaceForm, UserBookingForm, BusStatusForm, CheckAvailabilityForm, EditPlaceForm, DeletePlaceForm, EditBusForm, DeleteBusForm, UserFilterForm
+from .forms import BusForm, PlaceForm, UserBookingForm, BusStatusForm, CheckAvailabilityForm, EditPlaceForm, DeletePlaceForm, EditBusForm, DeleteBusForm, UserFilterForm, ProfileForm
 from .models import Places, Bus, UserBooking, BusStatus
 from django.contrib.auth.decorators import login_required
 import re
@@ -26,7 +26,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import (PlacesSerializer, BusSerializer, BusStatusSerializer, 
-                        UserBookingSerializer, SignUpApiSerializer, LogInApiSerializer)
+                        UserBookingSerializer, SignUpApiSerializer, LogInApiSerializer,
+                        MediaUploadSerializer, UserSerializer)
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework import serializers
 from django.views.decorators.csrf import csrf_exempt
@@ -186,45 +187,6 @@ class LogoutView(APIView):
         return Response({"message": "successfully logged out"})
 
 
-
-
-# class LogInApi(ObtainAuthToken, APIView):
-
-    # permission_classes = [AllowAny]
-
-    # def post(self, request):
-    #     email = self.request.POST.get("email")
-    #     password = self.request.POST.get("password")
-
-    #     try:
-    #         user = User.objects.get(email=email)
-    #     except User.DoesNotExist:
-    #         msg = f"No user with this email '{email}' has registered yet"
-    #         data = LogInApiSerializer({"message": msg})
-    #         return Response(data.data)
-    #     auth_user = authenticate(request, username=user.username, email= user.email, password=password)
-    #     if auth_user is not None and not user.is_superuser:
-    #         #login(self.request, auth_user)    #--> only used when using templates
-    #         msg = "you are logged in as User"
-    #         refresh = RefreshToken.for_user(auth_user)
-
-    #         refresh_token = str(refresh.access_token)
-    #         return Response({"message": msg, "logged_email": email, "refresh token": refresh_token})
-
-        
-    #     elif auth_user is not None and user.is_superuser:
-    #         login(self.request, auth_user)
-    #         refresh = RefreshToken.for_user(auth_user)
-    #         refresh_token = str(refresh.access_token)
-    #         msg = "you are logged in as Admin user"
-    #         return Response({"message": msg, "logged_email": email, "refresh token": refresh_token})
-        
-    #     else:
-    #         msg = "Invalid username or password"
-    #         data = LogInApiSerializer({"message": msg, "logged_email": email})
-    #         return Response(data.data)
-
-
 class Home(LoginRequiredMixin, View):
     def get(self, request): 
         form = UserBookingForm()
@@ -304,13 +266,18 @@ class BookTicket(LoginRequiredMixin, View):
             data.save()
             wholebus_busstatus.seats_available = int(wholebus_busstatus.seats_available) - int(no_of_seats)
             wholebus_busstatus.save()
-            del self.request.session["checkavailability_bus_no"]
+            if "checkavailability_bus_no" in self.request.session:
+                del self.request.session["checkavailability_bus_no"]
             self.request.session["body_content"] = f"""your booking from pickup point:\"{pickup_place}\" to dropdown point:\"{dropdown_place}\" has been confirmed. For your info that bus will start from \"{wholebus_busstatus.start_place.places}\" to \"{wholebus_busstatus.end_place.places}\""""
             self.request.session["email"] = data.user.email
             return redirect(reverse("confirmmail"))
         except:
             return render(request, "app1/bookticket.html", {"form": form, "msg": "Something went wrong"})
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('login'))
+        return super().dispatch(request, *args, **kwargs)
 
 class BookTicketApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -347,7 +314,8 @@ class BookTicketApi(APIView):
             data.save()
             wholebus_busstatus.seats_available = int(wholebus_busstatus.seats_available) - int(no_of_seats)
             wholebus_busstatus.save()
-            del self.request.session["checkavailability_bus_no"]
+            if "checkavailability_bus_no" in self.request.session:
+                del self.request.session["checkavailability_bus_no"]
             self.request.session["body_content"] = f"""your booking from pickup point:\"{pickup_place}\" to dropdown point:\"{dropdown_place}\" has been confirmed. For your info that bus will start from \"{wholebus_busstatus.start_place.places}\" to \"{wholebus_busstatus.end_place.places}\""""
             self.request.session["email"] = data.user.email
             return Response({"msg": "successfully booked ticket. check mail for confirmation"})
@@ -403,9 +371,9 @@ class CheckAvailability(LoginRequiredMixin, View):
                 Q(start_place__exact=pickup_point_id) & 
                 Q(start_date__exact=date) & 
                 Q(end_place__exact=drop_point_id)
-            )
+            ).order_by("seats_available")
         if available_bus:
-            Bus = available_bus
+            Bus = available_bus.order_by("-seats_available")
             data1 = [{
                 "Bus_no": bus.bus.bus_no,
                 "Available_Seats":bus.seats_available,
@@ -416,7 +384,7 @@ class CheckAvailability(LoginRequiredMixin, View):
                 "Destination_date":bus.end_date.strftime('%Y-%m-%d'),
                 "Destination_time":bus.end_time.strftime('%H:%M:%S')
             } for bus in Bus]
-            session_bus = available_bus.first()
+            session_bus = available_bus.last()
             session_bus_no = session_bus.bus.bus_no
             self.request.session["checkavailability_bus_no"] = session_bus_no
             return render(request, "app1/checkavailabilityresults.html", {"data1": data1})
@@ -428,6 +396,7 @@ class CheckAvailability(LoginRequiredMixin, View):
         if not request.user.is_authenticated:
             return redirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
+    
     
 class CheckAvailabilityApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -491,6 +460,11 @@ class UserBookingDetails(LoginRequiredMixin, View):
             "Bus_End_Point": userbooking.busstatus.end_place.places,
         } for userbooking in Userbooking]
         return render(request, "app1/userdetail.html", {"Display": display_data})
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('login'))
+        return super().dispatch(request, *args, **kwargs)
 
 class UserBookingDetailsApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -535,9 +509,9 @@ class PlaceAdd(LoginRequiredMixin, View):
         places = self.request.POST.get("places")
         if form.is_valid() and not Places.objects.filter(places=places).exists():
             form.save()
-            return render(request, "app1/admin/place_add.html", {"form": form, "msg": f"Place \"{places}\" added successfully", "places": all_places()})
+            return render(request, "app1/admin/place_add.html", {"form": PlaceForm, "msg": f"Place \"{places}\" added successfully", "places": all_places()})
         else:
-            return render(request, "app1/admin/place_add.html", {"form": form, "msg": "Place already exists", "places": all_places()})
+            return render(request, "app1/admin/place_add.html", {"form": PlaceForm, "msg": "Place already exists", "places": all_places()})
         
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -587,9 +561,9 @@ class PlaceEdit(LoginRequiredMixin, View):
             place_model = Places.objects.get(places=place_id)
             place_model.places = place
             place_model.save()
-            return render(request, "app1/admin/place_edit.html", {"form": form, "places": all_places, "msg": f"place '{place}' with place id '{place_id} has successfully edited"})
+            return render(request, "app1/admin/place_edit.html", {"form": EditPlaceForm, "places": all_places, "msg": f"place '{place}' with place id '{place_id} has successfully edited"})
         else:
-            return render(request, "app1/admin/place_edit.html", {"form": form, "places": all_places, "msg": "This place already exists"})
+            return render(request, "app1/admin/place_edit.html", {"form": EditPlaceForm, "places": all_places, "msg": "This place already exists"})
         
 
 class PlaceEditApi(APIView):
@@ -635,10 +609,10 @@ class PlaceDelete(LoginRequiredMixin, View):
         if Places.objects.filter(places=place_id).exists():
             place_model = Places.objects.get(places=place_id)
             place_model.delete()
-            return render(request, "app1/admin/place_delete.html", {"form": form, "places": all_places, "msg": f"place place id \"{place_id}\" has successfully deleted"})
+            return render(request, "app1/admin/place_delete.html", {"form": DeletePlaceForm, "places": all_places, "msg": f"place place id \"{place_id}\" has successfully deleted"})
         else:
             data1 = [{"place_id": place.pk, "place": place.places} for place in all_places]
-            return render(request, "app1/admin/place_edit.html", {"form": form, "places": data1, "msg": "Something Went Wrong"})
+            return render(request, "app1/admin/place_edit.html", {"form": DeletePlaceForm, "places": data1, "msg": "Something Went Wrong"})
         
 class PlaceDeleteApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -676,9 +650,9 @@ class BusAdd(LoginRequiredMixin, View):
         bus_no = self.request.POST.get("bus_no")
         if form.is_valid() and not Bus.objects.filter(bus_no=bus_no).exists():
             form.save()
-            return render(request, "app1/admin/bus_add.html", {"form": form, "buses": all_buses, "msg": "Bus added successfully"})
+            return render(request, "app1/admin/bus_add.html", {"form": BusForm, "buses": all_buses, "msg": "Bus added successfully"})
         else:
-            return render(request, "app1/admin/bus_add.html", {"form": form, "buses": all_buses, "msg": "Bus already exist"})
+            return render(request, "app1/admin/bus_add.html", {"form": BusForm, "buses": all_buses, "msg": "Bus already exist"})
         
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -732,16 +706,16 @@ class BusEdit(LoginRequiredMixin, View):
             bus.total_seats = total_seats
             bus.bus_type = bus_type
             bus.save()
-            return render(request, "app1/admin/bus_edit.html", {"form": form, "buses": all_buses, "msg": f"bus with the Bus Id of {bus_id} has been Edited"})
+            return render(request, "app1/admin/bus_edit.html", {"form": EditBusForm, "buses": all_buses, "msg": f"bus with the Bus Id of {bus_id} has been Edited"})
         except:
             if Bus.objects.filter(bus_no=bus_no).exists() and Bus.objects.filter(bus_name=bus_name).exists():
                 bus = Bus.objects.get(id=bus_id)
                 bus.total_seats = total_seats
                 bus.bus_type = bus_type
                 bus.save()
-                return render(request, "app1/admin/bus_edit.html", {"form": form, "buses": all_buses, "msg": "Only Total Seats and Bus Type has been updated"})
+                return render(request, "app1/admin/bus_edit.html", {"form": EditBusForm, "buses": all_buses, "msg": "Only Total Seats and Bus Type has been updated"})
             else:
-                return render(request, "app1/admin/bus_edit.html", {"form": form, "buses": all_buses, "msg": "Bus with this Bus  or Bus Name already exist"})
+                return render(request, "app1/admin/bus_edit.html", {"form": EditBusForm, "buses": all_buses, "msg": "Bus with this Bus  or Bus Name already exist"})
  
 
 class BusEditApi(APIView):
@@ -794,9 +768,9 @@ class BusDelete(LoginRequiredMixin, View):
         try:
             bus = Bus.objects.get(id=bus_id)
             bus.delete()
-            return render(request, "app1/admin/bus_delete.html", {"form": form, "buses": all_buses, "msg": f"Bus with the selected Bus Id \"{bus_id}\" has been deleted"})
+            return render(request, "app1/admin/bus_delete.html", {"form": DeleteBusForm, "buses": all_buses, "msg": f"Bus with the selected Bus Id \"{bus_id}\" has been deleted"})
         except:
-            return render(request, "app1/admin/bus_delete.html", {"form": form, "buses": all_buses, "msg": "Something Went Wrong"})
+            return render(request, "app1/admin/bus_delete.html", {"form": DeleteBusForm, "buses": all_buses, "msg": "Something Went Wrong"})
 
 class BusDeleteApi(APIView):
     permission_classes = [IsAuthenticated]
@@ -866,16 +840,16 @@ class FilterUser(LoginRequiredMixin, View):
                     user = User.objects.get(username=data)
                 data1 = userbookingfilter(user)
                 data2 = userfilter(user.username)
-                return render(request, "app1/admin/filter_user.html", {"form": form, "data1": data1, "data2": data2})
+                return render(request, "app1/admin/filter_user.html", {"form": UserFilterForm, "data1": data1, "data2": data2})
             
             elif choice == "email":
                 if User.objects.filter(email=data).exists():
                     user = User.objects.get(email=data)
                 data1 = userbookingfilter(user)
                 data2 = userfilter(user.username)
-                return render(request, "app1/admin/filter_user.html", {"form": form, "data1": data1, "data2": data2})
+                return render(request, "app1/admin/filter_user.html", {"form": UserFilterForm, "data1": data1, "data2": data2})
         except:
-            return render(request, "app1/admin/filter_user.html", {"form": form, "error": "Details you entered mismatched or wrong"})
+            return render(request, "app1/admin/filter_user.html", {"form": UserFilterForm, "error": "Details you entered mismatched or wrong"})
         
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -956,7 +930,7 @@ class BusStatusAdd(LoginRequiredMixin, View):
                   "bus_name": bus.bus_name,
                   "total seats": bus.total_seats,
                   "bus_type": bus.bus_type} for bus in buses]
-            return render(request, "app1/admin/busstatus_add.html", {"form": form,"buses": data2, "all_bus_status_filter_by_expired_date": all_bus_status_filter_by_expired_date,
+            return render(request, "app1/admin/busstatus_add.html", {"form": BusStatusForm,"buses": data2, "all_bus_status_filter_by_expired_date": all_bus_status_filter_by_expired_date,
                                                                      "all_bus_status_filter_by_upcoming_date": all_bus_status_filter_by_upcoming_date,
                                                                       "msg": f"Bus from {bus_start_place} to {bus_end_place} starting on {startdate} added successfully"})
         
@@ -967,7 +941,7 @@ class BusStatusAdd(LoginRequiredMixin, View):
                 "bus_name": bus.bus_name,
                 "total seats": bus.total_seats,
                 "bus_type": bus.bus_type} for bus in buses]
-            return render(request, "app1/admin/busstatus_add.html", {"form": form, "all_bus_status_filter_by_expired_date": all_bus_status_filter_by_expired_date,
+            return render(request, "app1/admin/busstatus_add.html", {"form": BusStatusForm, "all_bus_status_filter_by_expired_date": all_bus_status_filter_by_expired_date,
                                                                      "all_bus_status_filter_by_upcoming_date": all_bus_status_filter_by_upcoming_date,"buses": data2, "msg": "Bus with the given number already exists"})
 
     def dispatch(self, request, *args, **kwargs):
@@ -1112,23 +1086,123 @@ class LogOutApi(APIView):
 
 ################  functions shortcuts  ###############
 
+from .forms import ProfileForm
+from .models import MediaUpload
 
-class Test(APIView):
+class EditProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        username = self.request.user.username
-        places = Places.objects.all()
-        places_serial = PlacesSerializer(places, many=True)
-        bus = Bus.objects.all()
-        bus_serial = BusSerializer(bus, many=True)
-        all_bus_active = BusStatus.objects.all()
-        all_bus_active_serial = BusStatusSerializer(all_bus_active, many=True)
-        user_booking = UserBooking.objects.all()
-        user_booking_serial = UserBookingSerializer(user_booking, many=True)
-        return Response({"places": places_serial.data, "buses": bus_serial.data, "bus_status": all_bus_active_serial.data,
-                         "user_booking": user_booking_serial.data})
+        form = ProfileForm()
+        return render(request, "app1/user_additional.html", {"form": form})
+    
+    def post(self, request):
+        form = ProfileForm(self.request.POST, self.request.FILES)
+        logged_username = self.request.user.username
+        user = User.objects.get(username=logged_username)
+        file = self.request.FILES.get("user_image")
+        address = self.request.POST.get("address")
+        mobile = self.request.POST.get("mobile")
+        first_name = self.request.POST.get("first_name")
+        last_name = self.request.POST.get("last_name")
+        if not MediaUpload.objects.filter(user_id=user.pk).exists():
+            media = MediaUpload(user=user,
+                                file=file,
+                                address=address,
+                                mobile=mobile)
+            media.save()
+            adduser = User.objects.get(username=logged_username)
+            adduser.first_name = first_name
+            adduser.last_name = last_name
+            adduser.save()
+            return render(request, "app1/user_additional.html", {"form": ProfileForm, "msg": "user profile updated successfully"})
 
 
+        if MediaUpload.objects.filter(user_id=user.pk).exists():
+            media = MediaUpload.objects.get(user=user)
+            media.file = file
+            media.address = address
+            media.mobile = mobile
+            media.save()
+            adduser = User.objects.get(username=logged_username)
+            adduser.first_name = first_name
+            adduser.last_name = last_name
+            adduser.save()
+            return render(request, "app1/user_additional.html", {"form": ProfileForm, "msg": "user profile updated successfully"})
+        return render(request, "app1/user_additional.html", {"form": ProfileForm}) 
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('login'))
+        return super().dispatch(request, *args, **kwargs)
+
+class EditProfileViewApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"msg": "you are logged in as user"})
+    
+    def post(self, request):
+        form = ProfileForm(self.request.POST, self.request.FILES)
+        logged_username = self.request.user.username
+        user = User.objects.get(username=logged_username)
+        file = self.request.FILES.get("user_image")
+        address = self.request.POST.get("address")
+        mobile = self.request.POST.get("mobile")
+        first_name = self.request.POST.get("first_name")
+        last_name = self.request.POST.get("last_name")
+
+        if not MediaUpload.objects.filter(user_id=user.pk).exists():
+            media = MediaUpload(user=user,
+                                file=file,
+                                address=address,
+                                mobile=mobile)
+            media.save()
+            adduser = User.objects.get(username=logged_username)
+            adduser.first_name = first_name
+            adduser.last_name = last_name
+            adduser.save()
+            return Response({"msg": "user profile updated successfully"})
 
 
+        if MediaUpload.objects.filter(user_id=user.pk).exists():
+            media = MediaUpload.objects.get(user=user)
+            media.file = file
+            media.address = address
+            media.mobile = mobile
+            media.save()
+            adduser = User.objects.get(username=logged_username)
+            adduser.first_name = first_name
+            adduser.last_name = last_name
+            adduser.save()
+            return Response({"msg": "user profile updated successfully"})
 
 
+class ViewProfile(LoginRequiredMixin, View):
+    
+    def get(self, request):
+        logged_username = self.request.user.username
+        user = User.objects.get(username=logged_username)
+        try:
+            data = MediaUpload.objects.get(user=user)
+        except:
+            data = None
+        return render(request, "app1/viewprofile.html", {"data": data, "user": user})
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('login'))
+        return super().dispatch(request, *args, **kwargs)
+    
+class ViewProfileApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        logged_username = self.request.user.username
+        user = User.objects.get(username=logged_username)
+        try:
+            data = MediaUpload.objects.get(user=user)
+        except:
+            data = None
+        datas = MediaUploadSerializer(data)  #MediaUploadSerializer(data, many=True) --> many=True can only used when object has multiple data
+        users = UserSerializer(user)
+        print(users.data)
+        return Response({"data": datas.data, "user": users.data})
