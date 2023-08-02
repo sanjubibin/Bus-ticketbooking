@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from app1 import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("app1.urls")),
-    path('swagger/', include('swagger_ui.urls')),  #http://localhost:8000/swagger/api-doc   use this path to access swagger documentation
+    path('swagger/', views.swagger_ui, name='swagger-ui'),  #http://localhost:8000/swagger/api-doc   use this path to access swagger documentation
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

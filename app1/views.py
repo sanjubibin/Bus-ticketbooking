@@ -35,6 +35,9 @@ from rest_framework_simplejwt.tokens import RefreshToken, OutstandingToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 #code here
 
+def swagger_ui(request):
+    return render(request, 'swagger_custom.html')
+
 class SignUp(View):
     def get(self, request):
         form = SignInForm()
