@@ -4,20 +4,32 @@
     pip freeze > requirements.txt --> to create and update file
     pip install -r requirements.txt --> to install packages
 
-## get step by step for push
+## create a new repository on the command line
+    echo "# Bus-ticketbooking" >> README.md
     git init
-    git add .
-    git commit -m "commit name"
-    git remote add origin <git repository url>
-    git push <git repository url>
+    git add README.md
+    git commit -m "first commit"
+    git branch -M main
+    git remote add origin https://github.com/sanjubibin/Bus-ticketbooking.git
+    git push -u origin main
 
-## git instructions
-    git init --> for initial working
-    git add . --> for every change in project(check this)
-    git status --> to check whether there are any changes made for commiting
-    git commit -m "commit name" --> when ever needed for commiting
-    git remote add <name> <url> --> name-sanjubibin, url-https://github.com/sanjubibin/git-testing.git
-    git pull <url> --> to make changes to the local project folder with exact folder in github repository
+## push an existing repository from the command line
+    git remote add origin https://github.com/sanjubibin/Bus-ticketbooking.git
+    git branch -M main
+    git push -u origin main
+
+## push all the project code in the main branch of GitHub
+    # Check the current branch
+    git status
+
+    # Add all the files in the current directory to the staging area
+    git add .
+
+    # Commit the changes to the staging area
+    git commit -m "Pushing all the project code to GitHub"
+
+    # Push the changes to the main branch on GitHub
+    git push origin main
 
 ## git clone
     git clone <git repository url>
