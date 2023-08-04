@@ -16,7 +16,6 @@
     git add . --> for every change in project(check this)
     git status --> to check whether there are any changes made for commiting
     git commit -m "commit name" --> when ever needed for commiting
-    git push 
     git remote add <name> <url> --> name-sanjubibin, url-https://github.com/sanjubibin/git-testing.git
     git pull <url> --> to make changes to the local project folder with exact folder in github repository
 
