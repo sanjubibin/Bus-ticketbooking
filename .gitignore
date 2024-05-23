@@ -1,8 +1,7 @@
 
 
 # Ignore all __pycache__ directories
-**/*.pyc
-**/__pycache__/
+app1/__pycache__/
 
 
 # Ignore IDE/editor configuration files
