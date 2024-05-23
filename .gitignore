@@ -1,6 +1,7 @@
 
 
 # Ignore all __pycache__ directories
+**/*.pyc
 **/__pycache__/
 
 
