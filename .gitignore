@@ -1,0 +1,11 @@
+# ignore python bytecode's
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore IDE/editor configuration files
+.vscode/
+.idea/
+
+# Ignore specific Python files
+credential.py
