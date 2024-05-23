@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import ssl
 import smtplib
 from email.message import EmailMessage
-from .auth import mail_1218124_password
+from .credential import mail_password
 from django.contrib.auth import logout
 
 def all_places():
@@ -123,7 +123,7 @@ def send_mail(message, email):
 
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-            smtp.login("sanjubibin1218124@gmail.com", mail_1218124_password)
+            smtp.login("sanjubibin1218124@gmail.com", mail_password)
             result = smtp.send_message(mail)
             if not result:
                 pass

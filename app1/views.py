@@ -15,7 +15,7 @@ import datetime as dt
 import ssl
 import smtplib
 from email.message import EmailMessage
-from .auth import mail_1218124_password
+from .credential import mail_password, mail_username
 from .funtions import (all_places, all_buses, all_bus_status, userbookingfilter, 
                        send_mail, all_bus_status_filter_by_upcoming_date, 
                        all_bus_status_filter_by_expired_date, userfilter, logoutsite)
@@ -334,14 +334,14 @@ class SendMail(View):
             del self.request.session["email"]     
 
             mail = EmailMessage()
-            mail["From"] = "sanjubibin1218124@gmail.com"
+            mail["From"] = mail_username
             mail["To"] = user_email
             mail["Subject"] = "AS-Travels"
             mail.set_content(msg)
 
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-                smtp.login("sanjubibin1218124@gmail.com", mail_1218124_password)
+                smtp.login(mail_username, mail_password)
                 smtp.send_message(mail)
                 return render(request, "app1/mail.html")
         except KeyError:
